@@ -50,12 +50,21 @@ const BuilderWizard = () => {
       return;
     }
 
-    if (validIndex < stepsConfig.length - 1) {
-      const next = stepsConfig[validIndex + 1];
-      navigate(`/${next.route}`);
-      setError(null);
-    } else {
+    // Find next incomplete step
+    let nextIncomplete = -1;
+    for (let i = 0; i < stepsConfig.length; i++) {
+      if (!isStepComplete(stepsConfig[i].id)) {
+        nextIncomplete = i;
+        break;
+      }
+    }
+
+    if (nextIncomplete === -1) {
+      // All complete — open modal
       setModalOpen(true);
+    } else {
+      navigate(`/${stepsConfig[nextIncomplete].route}`);
+      setError(null);
     }
   }, [validIndex, isStepComplete, navigate]);
 

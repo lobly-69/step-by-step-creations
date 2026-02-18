@@ -13,7 +13,7 @@ const StepIndicator = ({ currentStepIndex, onStepClick }: StepIndicatorProps) =>
   return (
     <div className="flex items-center justify-center gap-1 px-4 py-3">
       {stepsConfig.map((step, index) => {
-        const completed = isStepComplete(step.id) && index < currentStepIndex;
+        const completed = isStepComplete(step.id) && index !== currentStepIndex;
         const active = index === currentStepIndex;
         const locked = !canAccessStep(index);
         const clickable = !locked && !active && canAccessStep(index);
