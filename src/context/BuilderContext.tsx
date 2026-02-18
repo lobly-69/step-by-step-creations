@@ -103,7 +103,7 @@ export const BuilderProvider: React.FC<{ children: React.ReactNode }> = ({ child
         case "tamanho":
           return state.tamanho !== null;
         case "cores":
-          return state.cores.frame !== null && state.cores.fundo !== null;
+          return true;
         case "upload": {
           const hasFile = state.upload.files.some((f) => f !== null);
           const noInProgress = state.upload.progress.every(
