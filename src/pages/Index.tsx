@@ -59,6 +59,18 @@ const BuilderWizard = () => {
     }
   }, [validIndex, isStepComplete, navigate]);
 
+  const handleBack = useCallback(() => {
+    if (validIndex > 0) {
+      navigate(`/${stepsConfig[validIndex - 1].route}`);
+      setError(null);
+    }
+  }, [validIndex, navigate]);
+
+  const handleStepClick = useCallback((index: number) => {
+    navigate(`/${stepsConfig[index].route}`);
+    setError(null);
+  }, [navigate]);
+
   const stepComponents: Record<string, React.ReactNode> = {
     tamanho: <StepTamanho onError={setError} />,
     cores: <StepCores onError={setError} />,
@@ -70,6 +82,8 @@ const BuilderWizard = () => {
       <BuilderLayout
         currentStepIndex={validIndex}
         onAdvance={handleAdvance}
+        onBack={handleBack}
+        onStepClick={handleStepClick}
         bottomLabel={validIndex === stepsConfig.length - 1 ? "Finalizar" : "Avancar"}
       >
         {stepComponents[stepsConfig[validIndex].id]}

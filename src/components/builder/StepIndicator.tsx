@@ -4,9 +4,10 @@ import { Check, Lock } from "lucide-react";
 
 interface StepIndicatorProps {
   currentStepIndex: number;
+  onStepClick?: (index: number) => void;
 }
 
-const StepIndicator = ({ currentStepIndex }: StepIndicatorProps) => {
+const StepIndicator = ({ currentStepIndex, onStepClick }: StepIndicatorProps) => {
   const { isStepComplete, canAccessStep } = useBuilder();
 
   return (
@@ -15,6 +16,7 @@ const StepIndicator = ({ currentStepIndex }: StepIndicatorProps) => {
         const completed = isStepComplete(step.id) && index < currentStepIndex;
         const active = index === currentStepIndex;
         const locked = !canAccessStep(index);
+        const clickable = !locked && !active && canAccessStep(index);
 
         return (
           <div key={step.id} className="flex items-center">
@@ -25,7 +27,10 @@ const StepIndicator = ({ currentStepIndex }: StepIndicatorProps) => {
                 }`}
               />
             )}
-            <div className="flex items-center gap-1.5">
+            <div
+              className={`flex items-center gap-1.5 ${clickable ? "cursor-pointer" : ""}`}
+              onClick={() => clickable && onStepClick?.(index)}
+            >
               <div
                 className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold transition-all duration-200 ${
                   completed
