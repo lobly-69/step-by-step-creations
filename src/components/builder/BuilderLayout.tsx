@@ -8,12 +8,11 @@ interface BuilderLayoutProps {
   currentStepIndex: number;
   children: React.ReactNode;
   onAdvance: () => void;
-  onBack?: () => void;
   onStepClick?: (index: number) => void;
   bottomLabel?: string;
 }
 
-const BuilderLayout = ({ currentStepIndex, children, onAdvance, onBack, onStepClick, bottomLabel }: BuilderLayoutProps) => {
+const BuilderLayout = ({ currentStepIndex, children, onAdvance, onStepClick, bottomLabel }: BuilderLayoutProps) => {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center">
       <div className="w-full max-w-[600px] mx-auto md:my-6 md:rounded-2xl md:shadow-lg md:border md:border-border bg-card flex flex-col h-screen md:h-[min(92vh,900px)] overflow-hidden relative">
@@ -26,7 +25,7 @@ const BuilderLayout = ({ currentStepIndex, children, onAdvance, onBack, onStepCl
           <div className="slide-step">{children}</div>
         </div>
         <div className="flex-shrink-0">
-          <BottomBar onAdvance={onAdvance} onBack={onBack} buttonLabel={bottomLabel} showBack={currentStepIndex > 0} />
+          <BottomBar onAdvance={onAdvance} buttonLabel={bottomLabel} />
         </div>
       </div>
     </div>

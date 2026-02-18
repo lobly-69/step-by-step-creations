@@ -82,7 +82,6 @@ const BuilderWizard = () => {
       <BuilderLayout
         currentStepIndex={validIndex}
         onAdvance={handleAdvance}
-        onBack={handleBack}
         onStepClick={handleStepClick}
         bottomLabel={validIndex === stepsConfig.length - 1 ? "Finalizar" : "Avancar"}
       >
