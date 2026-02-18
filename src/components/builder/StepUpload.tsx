@@ -1,6 +1,9 @@
-import { useRef, useEffect } from "react";
+import { useRef } from "react";
 import { useBuilder } from "@/context/BuilderContext";
 import { Upload, X } from "lucide-react";
+
+const ACCEPTED_TYPES = ".jpg,.jpeg,.png,.webp,.heic";
+const ACCEPTED_LABEL = "Ficheiros aceites: JPG, JPEG, PNG, WEBP e HEIC. Tamanho maximo: 30MB.";
 
 interface StepUploadProps {
   onError: (msg: string | null) => void;
@@ -10,7 +13,6 @@ const StepUpload = ({ onError }: StepUploadProps) => {
   const { state, addFile, removeFile, setProgress } = useBuilder();
   const fileInputRefs = useRef<(HTMLInputElement | null)[]>([null, null, null]);
 
-  // Simulate upload progress
   const simulateUpload = (index: number) => {
     let progress = 0;
     const interval = setInterval(() => {
@@ -31,13 +33,22 @@ const StepUpload = ({ onError }: StepUploadProps) => {
     simulateUpload(index);
   };
 
+  // Determine visible slots: show next empty slot only after previous is filled
+  const visibleCount = (() => {
+    let count = 1;
+    for (let i = 0; i < 2; i++) {
+      if (state.upload.files[i] !== null) count = i + 2;
+    }
+    return Math.min(count, 3);
+  })();
+
   return (
     <div>
       <h2 className="text-lg font-bold text-foreground mb-1">Envia as fotografias</h2>
       <p className="text-sm text-muted-foreground mb-4">Ate 3 fotos. Quanto melhor, melhor o resultado.</p>
 
       <div className="flex flex-col gap-3">
-        {[0, 1, 2].map((index) => {
+        {Array.from({ length: visibleCount }).map((_, index) => {
           const file = state.upload.files[index];
           const progress = state.upload.progress[index];
           const uploading = file && progress < 100;
@@ -93,7 +104,7 @@ const StepUpload = ({ onError }: StepUploadProps) => {
               <input
                 ref={(el) => { fileInputRefs.current[index] = el; }}
                 type="file"
-                accept="image/*"
+                accept={ACCEPTED_TYPES}
                 className="hidden"
                 onChange={(e) => handleFileSelect(index, e)}
               />
@@ -101,6 +112,8 @@ const StepUpload = ({ onError }: StepUploadProps) => {
           );
         })}
       </div>
+
+      <p className="text-xs text-muted-foreground mt-3">{ACCEPTED_LABEL}</p>
     </div>
   );
 };

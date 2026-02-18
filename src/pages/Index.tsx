@@ -85,12 +85,12 @@ const BuilderWizard = () => {
         onStepClick={handleStepClick}
         bottomLabel={validIndex === stepsConfig.length - 1 ? "Finalizar" : "Avancar"}
       >
-        {stepComponents[stepsConfig[validIndex].id]}
         {error && (
-          <div className="mt-4 rounded-lg bg-destructive/10 border border-destructive/20 px-3 py-2.5 text-sm text-destructive font-medium">
+          <div className="mt-2 rounded-lg bg-destructive/10 border border-destructive/20 px-3 py-2.5 text-sm text-destructive font-medium">
             {error}
           </div>
         )}
+        {stepComponents[stepsConfig[validIndex].id]}
       </BuilderLayout>
       <FinalModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
     </>
