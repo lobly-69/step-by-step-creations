@@ -31,12 +31,14 @@ export interface BuilderState {
 
 interface BuilderContextType {
   state: BuilderState;
+  visitedSteps: Set<string>;
   setTamanho: (id: string) => void;
   setFrame: (color: string) => void;
   setFundo: (color: string) => void;
   addFile: (index: number, file: File) => void;
   removeFile: (index: number) => void;
   setProgress: (index: number, value: number) => void;
+  markStepVisited: (stepId: string) => void;
   isStepComplete: (stepId: string) => boolean;
   canAccessStep: (stepIndex: number) => boolean;
   getCurrentPrice: () => { oldPrice: number; newPrice: number };
@@ -56,6 +58,16 @@ export const BuilderProvider: React.FC<{ children: React.ReactNode }> = ({ child
     cores: { frame: null, fundo: null },
     upload: { files: [null, null, null], progress: [0, 0, 0], completed: false },
   });
+  const [visitedSteps, setVisitedSteps] = useState<Set<string>>(new Set());
+
+  const markStepVisited = useCallback((stepId: string) => {
+    setVisitedSteps((prev) => {
+      if (prev.has(stepId)) return prev;
+      const next = new Set(prev);
+      next.add(stepId);
+      return next;
+    });
+  }, []);
 
   const setTamanho = useCallback((id: string) => {
     setState((prev) => ({ ...prev, tamanho: id }));
@@ -103,7 +115,7 @@ export const BuilderProvider: React.FC<{ children: React.ReactNode }> = ({ child
         case "tamanho":
           return state.tamanho !== null;
         case "cores":
-          return true;
+          return visitedSteps.has("cores");
         case "upload": {
           const hasFile = state.upload.files.some((f) => f !== null);
           const noInProgress = state.upload.progress.every(
@@ -115,7 +127,7 @@ export const BuilderProvider: React.FC<{ children: React.ReactNode }> = ({ child
           return false;
       }
     },
-    [state]
+    [state, visitedSteps]
   );
 
   const canAccessStep = useCallback(
@@ -138,12 +150,14 @@ export const BuilderProvider: React.FC<{ children: React.ReactNode }> = ({ child
     <BuilderContext.Provider
       value={{
         state,
+        visitedSteps,
         setTamanho,
         setFrame,
         setFundo,
         addFile,
         removeFile,
         setProgress,
+        markStepVisited,
         isStepComplete,
         canAccessStep,
         getCurrentPrice,

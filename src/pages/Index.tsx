@@ -9,7 +9,7 @@ import StepUpload from "@/components/builder/StepUpload";
 import FinalModal from "@/components/builder/FinalModal";
 
 const BuilderWizard = () => {
-  const { isStepComplete, canAccessStep } = useBuilder();
+  const { isStepComplete, canAccessStep, markStepVisited } = useBuilder();
   const location = useLocation();
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
@@ -35,38 +35,42 @@ const BuilderWizard = () => {
 
   const handleAdvance = useCallback(() => {
     const step = stepsConfig[validIndex];
-    if (!isStepComplete(step.id)) {
-      switch (step.id) {
-        case "tamanho":
-          setError("Escolhe um tamanho para continuar.");
-          break;
-        case "cores":
-          setError("Escolhe o frame e o fundo para continuar.");
-          break;
-        case "upload":
-          setError("Adiciona pelo menos 1 foto e aguarda o upload terminar para continuar.");
-          break;
-      }
+
+    // For steps with real validation (tamanho, upload), check completion
+    // For optional steps (cores), just mark as visited
+    if (step.id === "tamanho" && !isStepComplete(step.id)) {
+      setError("Escolhe um tamanho para continuar.");
+      return;
+    }
+    if (step.id === "upload" && !isStepComplete(step.id)) {
+      setError("Adiciona pelo menos 1 foto e aguarda o upload terminar para continuar.");
       return;
     }
 
-    // Find next incomplete step
-    let nextIncomplete = -1;
-    for (let i = 0; i < stepsConfig.length; i++) {
-      if (!isStepComplete(stepsConfig[i].id)) {
-        nextIncomplete = i;
-        break;
+    // Mark current step as visited
+    markStepVisited(step.id);
+
+    // Find next incomplete step (after marking current as visited)
+    const findNext = () => {
+      for (let i = 0; i < stepsConfig.length; i++) {
+        const sid = stepsConfig[i].id;
+        if (sid === step.id) continue; // skip current, we just completed it
+        if (sid === "cores") continue; // cores is optional, skip
+        if (sid === "tamanho" && !isStepComplete(sid)) return i;
+        if (sid === "upload" && !isStepComplete(sid)) return i;
       }
-    }
+      return -1;
+    };
+
+    const nextIncomplete = findNext();
 
     if (nextIncomplete === -1) {
-      // All complete — open modal
       setModalOpen(true);
     } else {
       navigate(`/${stepsConfig[nextIncomplete].route}`);
       setError(null);
     }
-  }, [validIndex, isStepComplete, navigate]);
+  }, [validIndex, isStepComplete, markStepVisited, navigate]);
 
   const handleBack = useCallback(() => {
     if (validIndex > 0) {
