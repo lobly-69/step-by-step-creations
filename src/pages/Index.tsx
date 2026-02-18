@@ -13,13 +13,13 @@ const BuilderWizard = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
+  const [toastMsg, setToastMsg] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
 
   const currentRoute = location.pathname.replace("/", "") || stepsConfig[0].route;
   const currentStepIndex = stepsConfig.findIndex((s) => s.route === currentRoute);
   const validIndex = currentStepIndex >= 0 ? currentStepIndex : 0;
 
-  // Redirect to first allowed step if current is invalid or inaccessible
   useEffect(() => {
     if (currentStepIndex < 0 || !canAccessStep(currentStepIndex)) {
       let idx = 0;
@@ -33,29 +33,31 @@ const BuilderWizard = () => {
     }
   }, [currentStepIndex, canAccessStep, isStepComplete, navigate]);
 
+  const showToast = useCallback((msg: string) => {
+    setToastMsg(null);
+    // Force re-render to restart timer
+    setTimeout(() => setToastMsg(msg), 10);
+  }, []);
+
   const handleAdvance = useCallback(() => {
     const step = stepsConfig[validIndex];
 
-    // For steps with real validation (tamanho, upload), check completion
-    // For optional steps (cores), just mark as visited
     if (step.id === "tamanho" && !isStepComplete(step.id)) {
-      setError("Escolhe um tamanho para continuar.");
+      showToast("Escolhe um tamanho para continuar.");
       return;
     }
     if (step.id === "upload" && !isStepComplete(step.id)) {
-      setError("Adiciona pelo menos 1 foto e aguarda o upload terminar para continuar.");
+      showToast("Adiciona pelo menos 1 foto e aguarda o upload terminar para continuar.");
       return;
     }
 
-    // Mark current step as visited
     markStepVisited(step.id);
 
-    // Find next incomplete step (after marking current as visited)
     const findNext = () => {
       for (let i = 0; i < stepsConfig.length; i++) {
         const sid = stepsConfig[i].id;
-        if (sid === step.id) continue; // skip current, we just completed it
-        if (sid === "cores") continue; // cores is optional, skip
+        if (sid === step.id) continue;
+        if (sid === "cores") continue;
         if (sid === "tamanho" && !isStepComplete(sid)) return i;
         if (sid === "upload" && !isStepComplete(sid)) return i;
       }
@@ -70,14 +72,7 @@ const BuilderWizard = () => {
       navigate(`/${stepsConfig[nextIncomplete].route}`);
       setError(null);
     }
-  }, [validIndex, isStepComplete, markStepVisited, navigate]);
-
-  const handleBack = useCallback(() => {
-    if (validIndex > 0) {
-      navigate(`/${stepsConfig[validIndex - 1].route}`);
-      setError(null);
-    }
-  }, [validIndex, navigate]);
+  }, [validIndex, isStepComplete, markStepVisited, navigate, showToast]);
 
   const handleStepClick = useCallback((index: number) => {
     navigate(`/${stepsConfig[index].route}`);
@@ -96,13 +91,10 @@ const BuilderWizard = () => {
         currentStepIndex={validIndex}
         onAdvance={handleAdvance}
         onStepClick={handleStepClick}
-        bottomLabel={validIndex === stepsConfig.length - 1 ? "Finalizar" : "Avancar"}
+        bottomLabel={validIndex === stepsConfig.length - 1 ? "Finalizar" : "Avançar"}
+        toastMessage={toastMsg}
+        onToastDismiss={() => setToastMsg(null)}
       >
-        {error && (
-          <div className="mt-2 rounded-lg bg-destructive/10 border border-destructive/20 px-3 py-2.5 text-sm text-destructive font-medium">
-            {error}
-          </div>
-        )}
         {stepComponents[stepsConfig[validIndex].id]}
       </BuilderLayout>
       <FinalModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
