@@ -112,10 +112,8 @@ export const BuilderProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const isStepComplete = useCallback(
     (stepId: string) => {
       switch (stepId) {
-        case "tamanho":
-          return state.tamanho !== null;
-        case "cores":
-          return visitedSteps.has("cores");
+        case "personalizacao":
+          return state.tamanho !== null && state.cores.frame !== null && state.cores.fundo !== null;
         case "upload": {
           const hasFile = state.upload.files.some((f) => f !== null);
           const noInProgress = state.upload.progress.every(
@@ -127,7 +125,7 @@ export const BuilderProvider: React.FC<{ children: React.ReactNode }> = ({ child
           return false;
       }
     },
-    [state, visitedSteps]
+    [state]
   );
 
   const canAccessStep = useCallback(

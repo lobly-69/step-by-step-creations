@@ -5,7 +5,6 @@ export interface StepConfig {
 }
 
 export const stepsConfig: StepConfig[] = [
-  { id: "tamanho", label: "Tamanho", route: "tamanho" },
-  { id: "cores", label: "Cores", route: "cores" },
+  { id: "personalizacao", label: "Personalização", route: "personalizacao" },
   { id: "upload", label: "Fotografia", route: "upload" },
 ];

@@ -51,7 +51,7 @@ const StepIndicator = ({ currentStepIndex, onStepClick }: StepIndicatorProps) =>
                 )}
               </div>
               <span
-                className={`text-xs font-medium hidden sm:inline transition-colors duration-200 ${
+                className={`text-xs font-medium transition-colors duration-200 ${
                   active ? "text-foreground" : "text-muted-foreground"
                 }`}
               >
