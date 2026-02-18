@@ -3,8 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { BuilderProvider, useBuilder } from "@/context/BuilderContext";
 import { stepsConfig } from "@/config/stepsConfig";
 import BuilderLayout from "@/components/builder/BuilderLayout";
-import StepTamanho from "@/components/builder/StepTamanho";
-import StepCores from "@/components/builder/StepCores";
+import StepPersonalizacao from "@/components/builder/StepPersonalizacao";
 import StepUpload from "@/components/builder/StepUpload";
 import FinalModal from "@/components/builder/FinalModal";
 
@@ -35,15 +34,14 @@ const BuilderWizard = () => {
 
   const showToast = useCallback((msg: string) => {
     setToastMsg(null);
-    // Force re-render to restart timer
     setTimeout(() => setToastMsg(msg), 10);
   }, []);
 
   const handleAdvance = useCallback(() => {
     const step = stepsConfig[validIndex];
 
-    if (step.id === "tamanho" && !isStepComplete(step.id)) {
-      showToast("Escolhe um tamanho para continuar.");
+    if (step.id === "personalizacao" && !isStepComplete(step.id)) {
+      showToast("Escolhe as cores e o tamanho para continuar.");
       return;
     }
     if (step.id === "upload" && !isStepComplete(step.id)) {
@@ -53,24 +51,12 @@ const BuilderWizard = () => {
 
     markStepVisited(step.id);
 
-    const findNext = () => {
-      for (let i = 0; i < stepsConfig.length; i++) {
-        const sid = stepsConfig[i].id;
-        if (sid === step.id) continue;
-        if (sid === "cores") continue;
-        if (sid === "tamanho" && !isStepComplete(sid)) return i;
-        if (sid === "upload" && !isStepComplete(sid)) return i;
-      }
-      return -1;
-    };
-
-    const nextIncomplete = findNext();
-
-    if (nextIncomplete === -1) {
-      setModalOpen(true);
-    } else {
-      navigate(`/${stepsConfig[nextIncomplete].route}`);
+    const nextIndex = validIndex + 1;
+    if (nextIndex < stepsConfig.length) {
+      navigate(`/${stepsConfig[nextIndex].route}`);
       setError(null);
+    } else {
+      setModalOpen(true);
     }
   }, [validIndex, isStepComplete, markStepVisited, navigate, showToast]);
 
@@ -80,8 +66,7 @@ const BuilderWizard = () => {
   }, [navigate]);
 
   const stepComponents: Record<string, React.ReactNode> = {
-    tamanho: <StepTamanho onError={setError} />,
-    cores: <StepCores onError={setError} />,
+    personalizacao: <StepPersonalizacao onError={setError} />,
     upload: <StepUpload onError={setError} />,
   };
 
