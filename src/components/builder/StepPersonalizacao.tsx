@@ -69,8 +69,8 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
 
       {/* Tamanhos */}
       <div>
-        <p className="text-xs font-semibold text-foreground mb-1.5">Tamanho:</p>
-        <div className="grid grid-cols-4 gap-1.5">
+        <p className="text-xs font-semibold text-foreground mb-1.5">Escolhe o Tamanho:</p>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-1.5">
           {sizeOptions.map((opt) => {
             const selected = state.tamanho === opt.id;
             const discount = Math.round(((opt.oldPrice - opt.newPrice) / opt.oldPrice) * 100);
