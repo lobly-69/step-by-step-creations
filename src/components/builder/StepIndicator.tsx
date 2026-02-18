@@ -11,7 +11,7 @@ const StepIndicator = ({ currentStepIndex, onStepClick }: StepIndicatorProps) =>
   const { isStepComplete, canAccessStep } = useBuilder();
 
   return (
-    <div className="flex items-center justify-center gap-1 px-4 py-3">
+    <div className="flex items-center justify-center gap-1 px-4 py-[5px]">
       {stepsConfig.map((step, index) => {
         const completed = isStepComplete(step.id) && index !== currentStepIndex;
         const active = index === currentStepIndex;
@@ -32,7 +32,7 @@ const StepIndicator = ({ currentStepIndex, onStepClick }: StepIndicatorProps) =>
               onClick={() => clickable && onStepClick?.(index)}
             >
               <div
-                className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold transition-all duration-200 ${
+                className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-semibold transition-all duration-200 ${
                   completed
                     ? "bg-step-completed text-primary-foreground"
                     : active
@@ -43,9 +43,9 @@ const StepIndicator = ({ currentStepIndex, onStepClick }: StepIndicatorProps) =>
                 }`}
               >
                 {completed ? (
-                  <Check className="w-3.5 h-3.5" />
+                  <Check className="w-3 h-3" />
                 ) : locked ? (
-                  <Lock className="w-3 h-3" />
+                  <Lock className="w-2.5 h-2.5" />
                 ) : (
                   index + 1
                 )}

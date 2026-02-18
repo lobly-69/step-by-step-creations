@@ -55,7 +55,7 @@ export const useBuilder = () => {
 export const BuilderProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [state, setState] = useState<BuilderState>({
     tamanho: null,
-    cores: { frame: null, fundo: null },
+    cores: { frame: "preto", fundo: "azul" },
     upload: { files: [null, null, null], progress: [0, 0, 0], completed: false },
   });
   const [visitedSteps, setVisitedSteps] = useState<Set<string>>(new Set());

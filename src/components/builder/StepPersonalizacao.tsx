@@ -24,52 +24,55 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
 
   return (
     <div>
-      <h2 className="text-lg font-bold text-foreground mb-0.5">Personaliza o teu quadro</h2>
-      <p className="text-sm text-muted-foreground mb-3">Escolhe cores e tamanho.</p>
+      <h2 className="text-base font-bold text-foreground leading-tight mb-0">Personaliza o teu quadro</h2>
+      <p className="text-xs text-muted-foreground leading-tight mb-2">Escolhe cores e tamanho.</p>
 
-      {/* Cores do Fundo */}
-      <div className="mb-3">
-        <p className="text-xs font-semibold text-foreground mb-1.5">Cor do Fundo:</p>
-        <div className="grid grid-cols-6 gap-1.5">
-          {fundoColors.map((c) => {
-            const selected = state.cores.fundo === c.id;
-            return (
-              <button
-                key={c.id}
-                onClick={() => { setFundo(c.id); onError(null); }}
-                className={`h-8 rounded-md border-2 transition-all duration-200 ${
-                  selected ? "border-promo ring-2 ring-promo/30 scale-105" : "border-border hover:border-primary/40"
-                }`}
-                style={{ backgroundColor: c.hex }}
-              />
-            );
-          })}
+      {/* Cores — moldura e fundo na mesma linha */}
+      <div className="flex gap-4 mb-3 items-start">
+        {/* Cor do Fundo */}
+        <div className="flex-1 min-w-0">
+          <p className="text-[10px] font-semibold text-foreground mb-1">Cor do Fundo:</p>
+          <div className="grid grid-cols-6 gap-1">
+            {fundoColors.map((c) => {
+              const selected = state.cores.fundo === c.id;
+              return (
+                <button
+                  key={c.id}
+                  onClick={() => { setFundo(c.id); onError(null); }}
+                  className={`h-7 rounded-md border-2 transition-all duration-200 ${
+                    selected ? "border-promo ring-2 ring-promo/30 scale-105" : "border-border hover:border-primary/40"
+                  }`}
+                  style={{ backgroundColor: c.hex }}
+                />
+              );
+            })}
+          </div>
         </div>
-      </div>
 
-      {/* Cores da Moldura */}
-      <div className="mb-4">
-        <p className="text-xs font-semibold text-foreground mb-1.5">Cor da Moldura:</p>
-        <div className="flex gap-1.5">
-          {frameColors.map((c) => {
-            const selected = state.cores.frame === c.id;
-            return (
-              <button
-                key={c.id}
-                onClick={() => { setFrame(c.id); onError(null); }}
-                className={`w-12 h-8 rounded-md border-2 transition-all duration-200 ${
-                  selected ? "border-promo ring-2 ring-promo/30 scale-105" : "border-border hover:border-primary/40"
-                }`}
-                style={{ backgroundColor: c.hex }}
-              />
-            );
-          })}
+        {/* Cor da Moldura */}
+        <div className="flex-shrink-0">
+          <p className="text-[10px] font-semibold text-foreground mb-1">Cor da Moldura:</p>
+          <div className="flex gap-1">
+            {frameColors.map((c) => {
+              const selected = state.cores.frame === c.id;
+              return (
+                <button
+                  key={c.id}
+                  onClick={() => { setFrame(c.id); onError(null); }}
+                  className={`w-10 h-7 rounded-md border-2 transition-all duration-200 ${
+                    selected ? "border-promo ring-2 ring-promo/30 scale-105" : "border-border hover:border-primary/40"
+                  }`}
+                  style={{ backgroundColor: c.hex }}
+                />
+              );
+            })}
+          </div>
         </div>
       </div>
 
       {/* Tamanhos */}
       <div>
-        <p className="text-xs font-semibold text-foreground mb-1.5">Escolhe o Tamanho:</p>
+        <p className="text-[10px] font-semibold text-foreground mb-1">Escolhe o Tamanho:</p>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-1.5">
           {sizeOptions.map((opt) => {
             const selected = state.tamanho === opt.id;
@@ -79,7 +82,7 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
               <button
                 key={opt.id}
                 onClick={() => { setTamanho(opt.id); onError(null); }}
-                className={`relative rounded-xl border-2 overflow-hidden transition-all duration-200 text-left ${
+                className={`relative rounded-xl border-2 overflow-hidden transition-all duration-200 text-center ${
                   selected
                     ? "border-promo shadow-lg ring-2 ring-promo/30"
                     : "border-border bg-card hover:border-primary/40"
@@ -90,10 +93,12 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
                   <div className="absolute top-1 right-1 bg-promo text-promo-foreground text-[9px] font-bold px-1 py-0.5 rounded-md">
                     -{discount}%
                   </div>
+                  <div className="absolute bottom-1 right-1 bg-white/90 text-foreground text-[8px] font-semibold px-1.5 py-0.5 rounded-md">
+                    Equilibrado
+                  </div>
                 </div>
                 <div className="p-1.5">
-                  <p className="text-[10px] font-semibold text-foreground mb-0.5">Equilibrado</p>
-                  <div className="flex flex-col">
+                  <div className="flex flex-col items-center">
                     <span className="text-[10px] text-muted-foreground line-through">
                       {opt.oldPrice.toFixed(2).replace(".", ",")}€
                     </span>

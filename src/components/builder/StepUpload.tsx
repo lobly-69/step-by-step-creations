@@ -5,6 +5,12 @@ import { Upload, X } from "lucide-react";
 const ACCEPTED_TYPES = ".jpg,.jpeg,.png,.webp,.heic";
 const ACCEPTED_LABEL = "Ficheiros aceites: JPG, JPEG, PNG, WEBP e HEIC. Tamanho maximo: 30MB.";
 
+const SLOT_LABELS = [
+  "Adiciona aqui a tua Foto Favorita",
+  "Queres adicionar mais uma?",
+  "Queres adicionar mais uma?",
+];
+
 interface StepUploadProps {
   onError: (msg: string | null) => void;
 }
@@ -33,7 +39,6 @@ const StepUpload = ({ onError }: StepUploadProps) => {
     simulateUpload(index);
   };
 
-  // Determine visible slots: show next empty slot only after previous is filled
   const visibleCount = (() => {
     let count = 1;
     for (let i = 0; i < 2; i++) {
@@ -67,7 +72,7 @@ const StepUpload = ({ onError }: StepUploadProps) => {
                     <Upload className="w-4 h-4 text-muted-foreground" />
                   </div>
                   <span className="text-sm font-medium text-muted-foreground">
-                    Foto {index + 1}
+                    {SLOT_LABELS[index]}
                   </span>
                 </button>
               ) : (
@@ -113,7 +118,11 @@ const StepUpload = ({ onError }: StepUploadProps) => {
         })}
       </div>
 
-      <p className="text-xs text-muted-foreground mt-3">{ACCEPTED_LABEL}</p>
+      <p className="text-sm font-semibold text-foreground underline mt-3 cursor-pointer">
+        Não estou a conseguir subir a minha Foto.
+      </p>
+
+      <p className="text-xs text-muted-foreground mt-2">{ACCEPTED_LABEL}</p>
     </div>
   );
 };
