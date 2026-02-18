@@ -28,27 +28,7 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
       <p className="text-xs text-muted-foreground leading-tight mb-2">Escolhe cores e tamanho.</p>
 
       {/* Cores — moldura e fundo na mesma linha */}
-      <div className="flex gap-4 mb-3 items-start">
-        {/* Cor do Fundo */}
-        <div className="flex-1 min-w-0">
-          <p className="text-[10px] font-semibold text-foreground mb-1">Cor do Fundo:</p>
-          <div className="grid grid-cols-6 gap-1">
-            {fundoColors.map((c) => {
-              const selected = state.cores.fundo === c.id;
-              return (
-                <button
-                  key={c.id}
-                  onClick={() => { setFundo(c.id); onError(null); }}
-                  className={`h-7 rounded-md border-2 transition-all duration-200 ${
-                    selected ? "border-promo ring-2 ring-promo/30 scale-105" : "border-border hover:border-primary/40"
-                  }`}
-                  style={{ backgroundColor: c.hex }}
-                />
-              );
-            })}
-          </div>
-        </div>
-
+      <div className="flex gap-6 mb-3 items-start">
         {/* Cor da Moldura */}
         <div className="flex-shrink-0">
           <p className="text-[10px] font-semibold text-foreground mb-1">Cor da Moldura:</p>
@@ -60,6 +40,26 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
                   key={c.id}
                   onClick={() => { setFrame(c.id); onError(null); }}
                   className={`w-10 h-7 rounded-md border-2 transition-all duration-200 ${
+                    selected ? "border-promo ring-2 ring-promo/30 scale-105" : "border-border hover:border-primary/40"
+                  }`}
+                  style={{ backgroundColor: c.hex }}
+                />
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Cor do Fundo */}
+        <div className="flex-1 min-w-0">
+          <p className="text-[10px] font-semibold text-foreground mb-1">Cor do Fundo:</p>
+          <div className="grid grid-cols-6 gap-1">
+            {fundoColors.map((c) => {
+              const selected = state.cores.fundo === c.id;
+              return (
+                <button
+                  key={c.id}
+                  onClick={() => { setFundo(c.id); onError(null); }}
+                  className={`h-7 rounded-md border-2 transition-all duration-200 ${
                     selected ? "border-promo ring-2 ring-promo/30 scale-105" : "border-border hover:border-primary/40"
                   }`}
                   style={{ backgroundColor: c.hex }}
