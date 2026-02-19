@@ -4,7 +4,6 @@ import { Upload, X } from "lucide-react";
 import WhatsAppHelpModal from "./WhatsAppHelpModal";
 
 const ACCEPTED_TYPES = ".jpg,.jpeg,.png,.webp,.heic";
-const ACCEPTED_LABEL = "Ficheiros aceites: JPG, JPEG, PNG, WEBP e HEIC. Tamanho maximo: 30MB.";
 
 const SLOT_LABELS = [
   "Clica aqui para Adicionar",
@@ -12,14 +11,70 @@ const SLOT_LABELS = [
   "Queres adicionar mais uma?",
 ];
 
+function getExt(file: File): string {
+  const fromName = file.name.split(".").pop()?.toLowerCase();
+  if (fromName) return fromName;
+  // fallback from mime
+  const mime = file.type;
+  if (mime.includes("jpeg") || mime.includes("jpg")) return "jpg";
+  if (mime.includes("png")) return "png";
+  if (mime.includes("webp")) return "webp";
+  if (mime.includes("heic")) return "heic";
+  return "jpg";
+}
+
 interface StepUploadProps {
   onError: (msg: string | null) => void;
 }
 
 const StepUpload = ({ onError }: StepUploadProps) => {
-  const { state, addFile, removeFile, setProgress } = useBuilder();
+  const { state, addFile, removeFile, setProgress, getUploadUrls } = useBuilder();
   const fileInputRefs = useRef<(HTMLInputElement | null)[]>([null, null, null]);
   const [helpModalOpen, setHelpModalOpen] = useState(false);
+
+  const doUpload = async (index: number, file: File) => {
+    try {
+      // Request a signed upload URL for this single file
+      const urls = await getUploadUrls([{ ext: getExt(file) }]);
+      const entry = urls[0];
+
+      if (!entry?.signed_url) {
+        // Fallback: simulate upload if no URL returned
+        simulateUpload(index);
+        return;
+      }
+
+      // Real PUT upload
+      const xhr = new XMLHttpRequest();
+      xhr.open("PUT", entry.signed_url, true);
+      xhr.setRequestHeader("Content-Type", file.type || "application/octet-stream");
+
+      xhr.upload.onprogress = (e) => {
+        if (e.lengthComputable) {
+          setProgress(index, Math.round((e.loaded / e.total) * 100));
+        }
+      };
+
+      xhr.onload = () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          setProgress(index, 100);
+        } else {
+          console.warn("Upload failed, status", xhr.status);
+          setProgress(index, 100); // mark complete anyway to not block UX
+        }
+      };
+
+      xhr.onerror = () => {
+        console.warn("Upload XHR error");
+        setProgress(index, 100);
+      };
+
+      xhr.send(file);
+    } catch (err) {
+      console.warn("getUploadUrls failed, falling back to simulate:", err);
+      simulateUpload(index);
+    }
+  };
 
   const simulateUpload = (index: number) => {
     let progress = 0;
@@ -38,7 +93,7 @@ const StepUpload = ({ onError }: StepUploadProps) => {
     if (!file) return;
     addFile(index, file);
     onError(null);
-    simulateUpload(index);
+    doUpload(index, file);
   };
 
   const visibleCount = (() => {

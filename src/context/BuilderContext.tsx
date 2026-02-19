@@ -1,12 +1,13 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from "react";
 import { stepsConfig } from "@/config/stepsConfig";
 import type { AppConfig } from "@/lib/configTypes";
+import { useSession, type UploadUrlEntry } from "@/hooks/useSession";
 
 export interface BuilderState {
   tamanho: string | null;
   cores: {
-    frame: string | null;   // stores frame prefix
-    fundo: string | null;    // stores background name
+    frame: string | null;
+    fundo: string | null;
   };
   upload: {
     files: (File | null)[];
@@ -21,6 +22,7 @@ interface BuilderContextType {
   configLoading: boolean;
   configOffline: boolean;
   visitedSteps: Set<string>;
+  sessionId: string | null;
   setTamanho: (id: string) => void;
   setFrame: (prefix: string) => void;
   setFundo: (name: string) => void;
@@ -32,6 +34,13 @@ interface BuilderContextType {
   canAccessStep: (stepIndex: number) => boolean;
   getCurrentPrice: () => { oldPrice: number; newPrice: number };
   getMockupUrl: () => string | null;
+  getUploadUrls: (files: { ext: string }[]) => Promise<UploadUrlEntry[]>;
+  finalizeSession: (payload: {
+    first_name: string;
+    last_name: string;
+    whatsapp_full?: string | null;
+    email?: string | null;
+  }) => Promise<{ success: boolean; entry_number?: number }>;
 }
 
 const BuilderContext = createContext<BuilderContextType | null>(null);
@@ -49,7 +58,12 @@ interface BuilderProviderProps {
   configOffline: boolean;
 }
 
-export const BuilderProvider: React.FC<BuilderProviderProps> = ({ children, config, configLoading, configOffline }) => {
+export const BuilderProvider: React.FC<BuilderProviderProps> = ({
+  children,
+  config,
+  configLoading,
+  configOffline,
+}) => {
   const [state, setState] = useState<BuilderState>({
     tamanho: null,
     cores: { frame: null, fundo: null },
@@ -58,7 +72,9 @@ export const BuilderProvider: React.FC<BuilderProviderProps> = ({ children, conf
   const [visitedSteps, setVisitedSteps] = useState<Set<string>>(new Set());
   const [defaultsApplied, setDefaultsApplied] = useState(false);
 
-  // Apply defaults once config is loaded
+  const { sessionId, updateStep, getUploadUrls, finalizeSession } = useSession();
+
+  // Apply color defaults once config is loaded (no size default)
   useEffect(() => {
     if (!configLoading && !defaultsApplied) {
       const defaultFrame = config.frameColors[0]?.prefix ?? null;
@@ -83,17 +99,43 @@ export const BuilderProvider: React.FC<BuilderProviderProps> = ({ children, conf
     });
   }, []);
 
-  const setTamanho = useCallback((id: string) => {
-    setState((prev) => ({ ...prev, tamanho: id }));
-  }, []);
+  const setTamanho = useCallback(
+    (id: string) => {
+      setState((prev) => ({ ...prev, tamanho: id }));
+      updateStep({ current_step: "SIZE", size: id });
+    },
+    [updateStep]
+  );
 
-  const setFrame = useCallback((prefix: string) => {
-    setState((prev) => ({ ...prev, cores: { ...prev.cores, frame: prefix } }));
-  }, []);
+  const setFrame = useCallback(
+    (prefix: string) => {
+      setState((prev) => {
+        const next = { ...prev, cores: { ...prev.cores, frame: prefix } };
+        updateStep({
+          current_step: "COLORS",
+          frame_prefix: prefix,
+          background_name: next.cores.fundo,
+        });
+        return next;
+      });
+    },
+    [updateStep]
+  );
 
-  const setFundo = useCallback((name: string) => {
-    setState((prev) => ({ ...prev, cores: { ...prev.cores, fundo: name } }));
-  }, []);
+  const setFundo = useCallback(
+    (name: string) => {
+      setState((prev) => {
+        const next = { ...prev, cores: { ...prev.cores, fundo: name } };
+        updateStep({
+          current_step: "COLORS",
+          frame_prefix: next.cores.frame,
+          background_name: name,
+        });
+        return next;
+      });
+    },
+    [updateStep]
+  );
 
   const addFile = useCallback((index: number, file: File) => {
     setState((prev) => {
@@ -127,7 +169,11 @@ export const BuilderProvider: React.FC<BuilderProviderProps> = ({ children, conf
     (stepId: string) => {
       switch (stepId) {
         case "personalizacao":
-          return state.tamanho !== null && state.cores.frame !== null && state.cores.fundo !== null;
+          return (
+            state.tamanho !== null &&
+            state.cores.frame !== null &&
+            state.cores.fundo !== null
+          );
         case "upload": {
           const hasFile = state.upload.files.some((f) => f !== null);
           const noInProgress = state.upload.progress.every(
@@ -155,11 +201,13 @@ export const BuilderProvider: React.FC<BuilderProviderProps> = ({ children, conf
   const getCurrentPrice = useCallback(() => {
     const defaultSize = config.sizes[0];
     const fallback = defaultSize
-      ? { oldPrice: defaultSize.price, newPrice: defaultSize.promo_price }
+      ? { oldPrice: defaultSize.price, newPrice: defaultSize.promo_price ?? defaultSize.price }
       : { oldPrice: 49.9, newPrice: 39.9 };
     if (!state.tamanho) return fallback;
     const size = config.sizes.find((s) => s.size === state.tamanho);
-    return size ? { oldPrice: size.price, newPrice: size.promo_price } : fallback;
+    return size
+      ? { oldPrice: size.price, newPrice: size.promo_price ?? size.price }
+      : fallback;
   }, [state.tamanho, config.sizes]);
 
   const getMockupUrl = useCallback(() => {
@@ -183,6 +231,7 @@ export const BuilderProvider: React.FC<BuilderProviderProps> = ({ children, conf
         configLoading,
         configOffline,
         visitedSteps,
+        sessionId,
         setTamanho,
         setFrame,
         setFundo,
@@ -194,6 +243,8 @@ export const BuilderProvider: React.FC<BuilderProviderProps> = ({ children, conf
         canAccessStep,
         getCurrentPrice,
         getMockupUrl,
+        getUploadUrls,
+        finalizeSession,
       }}
     >
       {children}
