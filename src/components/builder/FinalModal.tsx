@@ -39,7 +39,7 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
         </button>
 
         {/* Header image */}
-        <img src={helpdeskImg} alt="" className="w-full h-32 object-cover" />
+        <img src={helpdeskImg} alt="" className="w-full h-auto object-contain" />
 
         <div className="p-5">
           <h2 className="text-lg font-bold text-foreground mb-0.5">Quase lá!</h2>
@@ -60,54 +60,54 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
               />
             </div>
 
-            {/* WhatsApp */}
-            <div>
-              <label className="text-xs font-medium text-foreground mb-1 block">WhatsApp *</label>
-              <div className="flex gap-2">
-                <div className="relative flex-shrink-0">
-                  <select
-                    value={country}
-                    onChange={(e) => setCountry(e.target.value)}
-                    className="appearance-none rounded-lg border border-input bg-card pl-3 pr-7 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring w-[110px]"
-                  >
-                    {countryCodes.map((c) => (
-                      <option key={c.id} value={c.id}>
-                        {c.label} {c.code}
-                      </option>
-                    ))}
-                  </select>
-                  <svg className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                  </svg>
-                </div>
-                {country === "outro" && (
-                  <input
-                    type="text"
-                    value={customCode}
-                    onChange={(e) => setCustomCode(e.target.value)}
-                    placeholder="+..."
-                    className="w-16 rounded-lg border border-input bg-card px-2 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring flex-shrink-0"
-                  />
-                )}
-                <input
-                  type="tel"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="Número"
-                  className="flex-1 min-w-0 rounded-lg border border-input bg-card px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-                />
-              </div>
-            </div>
-
-            {/* Não tenho WhatsApp */}
+            {/* WhatsApp — hidden when email mode */}
             {!showEmail && (
-              <p
-                onClick={() => setShowEmail(true)}
-                className="text-xs font-semibold text-foreground underline cursor-pointer text-center"
-              >
-                Não tenho WhatsApp
-              </p>
+              <div>
+                <label className="text-xs font-medium text-foreground mb-1 block">WhatsApp *</label>
+                <div className="flex gap-2">
+                  <div className="relative flex-shrink-0">
+                    <select
+                      value={country}
+                      onChange={(e) => setCountry(e.target.value)}
+                      className="appearance-none rounded-lg border border-input bg-card pl-3 pr-7 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring w-[110px]"
+                    >
+                      {countryCodes.map((c) => (
+                        <option key={c.id} value={c.id}>
+                          {c.label} {c.code}
+                        </option>
+                      ))}
+                    </select>
+                    <svg className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                  {country === "outro" && (
+                    <input
+                      type="text"
+                      value={customCode}
+                      onChange={(e) => setCustomCode(e.target.value)}
+                      placeholder="+..."
+                      className="w-16 rounded-lg border border-input bg-card px-2 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring flex-shrink-0"
+                    />
+                  )}
+                  <input
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="Número"
+                    className="flex-1 min-w-0 rounded-lg border border-input bg-card px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                  />
+                </div>
+              </div>
             )}
+
+            {/* Toggle link */}
+            <p
+              onClick={() => setShowEmail(!showEmail)}
+              className="text-xs font-semibold text-foreground underline cursor-pointer text-center"
+            >
+              {showEmail ? "Tenho WhatsApp" : "Não tenho WhatsApp"}
+            </p>
 
             {/* Email field */}
             {showEmail && (
