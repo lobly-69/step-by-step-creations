@@ -2,29 +2,11 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 const SESSION_KEY = "lobly_session_id";
-const BASE_URL = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/functions/v1`;
 
-async function callEdge<T>(path: string, body: object): Promise<T> {
-  const { data: { session } } = await supabase.auth.getSession();
-  const anonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
-  const token = session?.access_token ?? anonKey;
-
-  const res = await fetch(`${BASE_URL}${path}`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`,
-      "apikey": anonKey,
-    },
-    body: JSON.stringify(body),
-  });
-
-  if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    throw new Error(`Edge function ${path} failed (${res.status}): ${text}`);
-  }
-
-  return res.json() as Promise<T>;
+async function callEdge<T>(functionName: string, body: object): Promise<T> {
+  const { data, error } = await supabase.functions.invoke(functionName, { body });
+  if (error) throw new Error(`Edge function ${functionName} failed: ${error.message}`);
+  return data as T;
 }
 
 export interface UploadUrlEntry {
@@ -62,7 +44,7 @@ export function useSession(): UseSessionReturn {
     if (creatingRef.current) return;
     creatingRef.current = true;
 
-    callEdge<{ session_id: string }>("/create_session", {
+    callEdge<{ session_id: string }>("create_session", {
       origin_url: window.location.href,
     })
       .then(({ session_id }) => {
@@ -81,7 +63,7 @@ export function useSession(): UseSessionReturn {
     async (payload: Record<string, unknown>) => {
       if (!sessionId) return;
       try {
-        await callEdge("/update_session_step", { session_id: sessionId, ...payload });
+        await callEdge("update_session_step", { session_id: sessionId, ...payload });
       } catch (err) {
         console.warn("update_session_step failed:", err);
       }
@@ -92,7 +74,7 @@ export function useSession(): UseSessionReturn {
   const getUploadUrls = useCallback(
     async (files: { ext: string }[]): Promise<UploadUrlEntry[]> => {
       if (!sessionId) return [];
-      const data = await callEdge<{ urls: UploadUrlEntry[] }>("/create_upload_urls", {
+      const data = await callEdge<{ urls: UploadUrlEntry[] }>("create_upload_urls", {
         session_id: sessionId,
         files,
       });
@@ -110,7 +92,7 @@ export function useSession(): UseSessionReturn {
     }) => {
       if (!sessionId) throw new Error("No session");
       const result = await callEdge<{ success: boolean; entry_number?: number }>(
-        "/finalize_session",
+        "finalize_session",
         { session_id: sessionId, ...payload }
       );
       // Clear session from localStorage on success
