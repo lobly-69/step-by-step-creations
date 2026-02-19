@@ -52,7 +52,7 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
         {/* Cor do Fundo */}
         <div className="flex-1 min-w-0">
           <p className="text-[10px] font-semibold text-foreground mb-1">Cor do Fundo:</p>
-          <div className="grid grid-cols-6 gap-1">
+          <div className="grid grid-cols-3 gap-1">
             {fundoColors.map((c) => {
               const selected = state.cores.fundo === c.id;
               return (
@@ -72,7 +72,7 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
 
       {/* Tamanhos */}
       <div>
-        <p className="text-[10px] font-semibold text-foreground mb-1">Escolhe o Tamanho:</p>
+        <p className="text-xs font-semibold text-foreground mb-1">Escolhe o Tamanho:</p>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-1.5">
           {sizeOptions.map((opt) => {
             const selected = state.tamanho === opt.id;

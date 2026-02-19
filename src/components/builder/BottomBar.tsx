@@ -14,7 +14,7 @@ const BottomBar = ({ onAdvance, buttonLabel = "Avançar" }: BottomBarProps) => {
     price.toFixed(2).replace(".", ",") + "€";
 
   return (
-    <div className="bg-card border-t border-border px-4 py-2 flex items-center justify-between">
+    <div className="bg-card border-t border-border px-4 py-[5px] flex items-center justify-between">
       <div className="flex flex-col gap-0">
         <span className="text-[10px] text-muted-foreground leading-tight">
           Antes: <span className="line-through">{formatPrice(oldPrice)}</span>
@@ -26,7 +26,7 @@ const BottomBar = ({ onAdvance, buttonLabel = "Avançar" }: BottomBarProps) => {
       </div>
       <button
         onClick={onAdvance}
-        className="bg-promo text-promo-foreground font-semibold text-sm px-6 py-2.5 rounded-lg active:scale-95 transition-transform duration-150 flex items-center gap-2"
+        className="bg-promo text-promo-foreground font-semibold text-base px-10 py-3 rounded-lg active:scale-95 transition-transform duration-150 flex items-center gap-2"
       >
         {buttonLabel}
         <Check className="w-4 h-4" />
