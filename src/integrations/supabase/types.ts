@@ -232,6 +232,24 @@ export type Database = {
           },
         ]
       }
+      builder_settings: {
+        Row: {
+          key: string
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          key: string
+          updated_at?: string
+          value: string
+        }
+        Update: {
+          key?: string
+          updated_at?: string
+          value?: string
+        }
+        Relationships: []
+      }
       frame_colors: {
         Row: {
           active: boolean | null

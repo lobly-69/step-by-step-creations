@@ -35,4 +35,5 @@ export interface AppConfig {
   backgroundColors: DbBackgroundColor[];
   frameColors: DbFrameColor[];
   mockupVariants: DbMockupVariant[];
+  supportWhatsapp: string;
 }
