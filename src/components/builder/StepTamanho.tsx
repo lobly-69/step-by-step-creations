@@ -1,4 +1,4 @@
-import { useBuilder, sizeOptions } from "@/context/BuilderContext";
+import { useBuilder } from "@/context/BuilderContext";
 import cardImg from "@/assets/card-tamanho.png";
 
 interface StepTamanhoProps {
@@ -6,7 +6,8 @@ interface StepTamanhoProps {
 }
 
 const StepTamanho = ({ onError }: StepTamanhoProps) => {
-  const { state, setTamanho } = useBuilder();
+  const { state, config, setTamanho } = useBuilder();
+  const sizeOptions = config.sizes;
 
   return (
     <div>
@@ -16,7 +17,7 @@ const StepTamanho = ({ onError }: StepTamanhoProps) => {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
         {sizeOptions.map((opt) => {
           const selected = state.tamanho === opt.id;
-          const discount = Math.round(((opt.oldPrice - opt.newPrice) / opt.oldPrice) * 100);
+          const discount = opt.discount;
 
           return (
             <button
@@ -32,7 +33,7 @@ const StepTamanho = ({ onError }: StepTamanhoProps) => {
               }`}
             >
               <div className="relative">
-                <img src={cardImg} alt="" className="w-full aspect-square object-cover" />
+                <img src={opt.bg_img || cardImg} alt="" className="w-full aspect-square object-cover" />
                 <div className="absolute top-1.5 right-1.5 bg-promo text-promo-foreground text-[10px] font-bold px-1.5 py-0.5 rounded-md">
                   -{discount}%
                 </div>
@@ -40,10 +41,10 @@ const StepTamanho = ({ onError }: StepTamanhoProps) => {
               <div className="p-2">
                 <div className="flex items-baseline gap-1">
                   <span className="text-[11px] text-muted-foreground line-through">
-                    {opt.oldPrice.toFixed(2).replace(".", ",")}€
+                    {opt.price.toFixed(2).replace(".", ",")}€
                   </span>
                   <span className="text-sm font-bold text-foreground">
-                    {opt.newPrice.toFixed(2).replace(".", ",")}€
+                    {opt.promo_price.toFixed(2).replace(".", ",")}€
                   </span>
                 </div>
               </div>

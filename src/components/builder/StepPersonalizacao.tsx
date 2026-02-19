@@ -1,26 +1,15 @@
-import { useBuilder, sizeOptions } from "@/context/BuilderContext";
+import { useBuilder } from "@/context/BuilderContext";
 import cardImg from "@/assets/card-tamanho.png";
-
-const frameColors = [
-  { id: "preto", hex: "#1a1a1a" },
-  { id: "branco", hex: "#ffffff" },
-];
-
-const fundoColors = [
-  { id: "azul", hex: "#4A7FB5" },
-  { id: "amarelo", hex: "#E8C840" },
-  { id: "taupe", hex: "#B8A99A" },
-  { id: "rosa", hex: "#E8A0BF" },
-  { id: "laranja", hex: "#E8813A" },
-  { id: "cinza", hex: "#9CA3AF" },
-];
 
 interface StepPersonalizacaoProps {
   onError: (msg: string | null) => void;
 }
 
 const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
-  const { state, setFrame, setFundo, setTamanho } = useBuilder();
+  const { state, config, setFrame, setFundo, setTamanho } = useBuilder();
+
+  const formatPrice = (price: number) =>
+    price.toFixed(2).replace(".", ",") + "€";
 
   return (
     <div>
@@ -33,14 +22,14 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
         <p className="col-span-2 text-[10px] font-semibold text-foreground">Cor da Moldura:</p>
         <p className="col-span-3 text-[10px] font-semibold text-foreground">Cor do Fundo:</p>
 
-        {/* Row 1 */}
+        {/* Frame colors */}
         <div className="col-span-2 grid grid-cols-2 gap-1">
-          {frameColors.map((c) => {
-            const selected = state.cores.frame === c.id;
+          {config.frameColors.map((c) => {
+            const selected = state.cores.frame === c.prefix;
             return (
               <button
                 key={c.id}
-                onClick={() => { setFrame(c.id); onError(null); }}
+                onClick={() => { setFrame(c.prefix); onError(null); }}
                 className={`h-9 rounded-lg border-2 transition-all duration-200 ${
                   selected ? "border-promo ring-2 ring-promo/30 scale-105" : "border-border hover:border-primary/40"
                 }`}
@@ -49,13 +38,15 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
             );
           })}
         </div>
+
+        {/* Background colors */}
         <div className="col-span-3 grid grid-cols-3 gap-1">
-          {fundoColors.map((c) => {
-            const selected = state.cores.fundo === c.id;
+          {config.backgroundColors.map((c) => {
+            const selected = state.cores.fundo === c.name;
             return (
               <button
-                key={c.id}
-                onClick={() => { setFundo(c.id); onError(null); }}
+                key={c.name}
+                onClick={() => { setFundo(c.name); onError(null); }}
                 className={`h-9 rounded-lg border-2 transition-all duration-200 ${
                   selected ? "border-promo ring-2 ring-promo/30 scale-105" : "border-border hover:border-primary/40"
                 }`}
@@ -70,9 +61,8 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
       <div>
         <p className="text-xs font-semibold text-foreground mb-1">Escolhe o Tamanho:</p>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-1.5">
-          {sizeOptions.map((opt) => {
+          {config.sizes.map((opt) => {
             const selected = state.tamanho === opt.id;
-            const discount = Math.round(((opt.oldPrice - opt.newPrice) / opt.oldPrice) * 100);
 
             return (
               <button
@@ -85,21 +75,21 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
                 }`}
               >
                 <div className="relative">
-                  <img src={cardImg} alt="" className="w-full aspect-square object-cover" />
+                  <img src={opt.bg_img || cardImg} alt="" className="w-full aspect-square object-cover" />
                   <div className="absolute top-1 right-1 bg-promo text-promo-foreground text-[9px] font-bold px-1 py-0.5 rounded-md">
-                    -{discount}%
+                    -{opt.discount}%
                   </div>
                   <div className="absolute bottom-1 right-1 bg-white/90 text-foreground text-[8px] font-semibold px-1.5 py-0.5 rounded-md">
-                    Equilibrado
+                    {opt.label}
                   </div>
                 </div>
                 <div className="p-1.5">
                   <div className="flex flex-col items-center">
                     <span className="text-[10px] text-muted-foreground line-through">
-                      {opt.oldPrice.toFixed(2).replace(".", ",")}€
+                      {formatPrice(opt.price)}
                     </span>
                     <span className="text-sm font-bold text-foreground">
-                      {opt.newPrice.toFixed(2).replace(".", ",")}€
+                      {formatPrice(opt.promo_price)}
                     </span>
                   </div>
                 </div>
