@@ -109,13 +109,41 @@ const BuilderWizard = () => {
 };
 
 
+const DebugBanner = ({ offline, fetchError }: { offline: boolean; fetchError: { message: string; statusCode?: number } | null }) => {
+  const clientUrl = "https://mveiamyvneyjvbrnjssd.supabase.co";
+  const urlPrefix = clientUrl.substring(0, 30) + "…";
+
+  useEffect(() => {
+    console.log("[DEBUG] Supabase config:", {
+      usingLovableClient: true,
+      supabaseUrlPrefix: urlPrefix,
+      isUsingFallback: offline,
+      fetchError,
+    });
+  }, []);
+
+  if (import.meta.env.PROD) return null;
+
+  return (
+    <div style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 9999, background: "#1a1a2e", color: "#0f0", fontFamily: "monospace", fontSize: 11, padding: "6px 12px", display: "flex", gap: 16, flexWrap: "wrap", opacity: 0.92 }}>
+      <span><b>usingLovableClient:</b> true</span>
+      <span><b>URL:</b> {urlPrefix}</span>
+      <span><b>Fallback:</b> {String(offline)}</span>
+      {fetchError && <span style={{ color: "#f55" }}><b>Erro:</b> {fetchError.message}{fetchError.statusCode ? ` (${fetchError.statusCode})` : ""}</span>}
+    </div>
+  );
+};
+
 const Index = () => {
   const { config, loading, offline, fetchError } = useAppConfig();
 
   return (
-    <BuilderProvider config={config} configLoading={loading} configOffline={offline}>
-      <BuilderWizard />
-    </BuilderProvider>
+    <>
+      <DebugBanner offline={offline} fetchError={fetchError} />
+      <BuilderProvider config={config} configLoading={loading} configOffline={offline}>
+        <BuilderWizard />
+      </BuilderProvider>
+    </>
   );
 };
 

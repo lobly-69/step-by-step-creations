@@ -1,10 +1,10 @@
 export interface DbSize {
-  id: string;
   size: string;
   label: string;
+  name: string;
   price: number;
-  promo_price: number;
-  discount: number;
+  promo_price: number | null;
+  discount: number | null;
   bg_img: string | null;
   display_order: number;
 }
@@ -16,7 +16,7 @@ export interface DbBackgroundColor {
 }
 
 export interface DbFrameColor {
-  id: string;
+  id: number;
   name: string;
   prefix: string;
   hex: string;

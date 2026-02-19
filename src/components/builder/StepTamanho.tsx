@@ -16,14 +16,14 @@ const StepTamanho = ({ onError }: StepTamanhoProps) => {
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
         {sizeOptions.map((opt) => {
-          const selected = state.tamanho === opt.id;
+          const selected = state.tamanho === opt.size;
           const discount = opt.discount;
 
           return (
             <button
-              key={opt.id}
-              onClick={() => {
-                setTamanho(opt.id);
+               key={opt.size}
+               onClick={() => {
+                 setTamanho(opt.size);
                 onError(null);
               }}
               className={`relative rounded-xl border-2 overflow-hidden transition-all duration-200 text-left ${
