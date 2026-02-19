@@ -50,7 +50,7 @@ const StepUpload = ({ onError }: StepUploadProps) => {
   return (
     <div>
       <h2 className="text-lg font-bold text-foreground mb-1">Envia as fotografias</h2>
-      <p className="text-sm text-muted-foreground mb-4">Ate 3 fotos. Quanto melhor, melhor o resultado.</p>
+      <p className="text-xs text-muted-foreground mb-4">Ate 3 fotos. Quanto melhor, melhor o resultado.</p>
 
       <div className="flex flex-col gap-3">
         {Array.from({ length: visibleCount }).map((_, index) => {
@@ -66,18 +66,18 @@ const StepUpload = ({ onError }: StepUploadProps) => {
               {!file ? (
                 <button
                   onClick={() => fileInputRefs.current[index]?.click()}
-                  className="w-full flex items-center gap-3 p-4"
+                  className="w-full flex items-center gap-3 p-3"
                 >
-                  <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center flex-shrink-0">
-                    <Upload className="w-4 h-4 text-muted-foreground" />
+                  <div className="w-9 h-9 rounded-full bg-secondary flex items-center justify-center flex-shrink-0">
+                    <Upload className="w-3.5 h-3.5 text-muted-foreground" />
                   </div>
-                  <span className="text-sm font-medium text-muted-foreground">
+                  <span className="text-xs font-medium text-muted-foreground leading-tight">
                     {SLOT_LABELS[index]}
                   </span>
                 </button>
               ) : (
-                <div className="flex items-center gap-3 p-4">
-                  <div className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center flex-shrink-0 overflow-hidden">
+                <div className="flex items-center gap-3 p-3">
+                  <div className="w-9 h-9 rounded-lg bg-secondary flex items-center justify-center flex-shrink-0 overflow-hidden">
                     <img
                       src={URL.createObjectURL(file)}
                       alt=""
@@ -85,7 +85,7 @@ const StepUpload = ({ onError }: StepUploadProps) => {
                     />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-foreground truncate">{file.name}</p>
+                    <p className="text-xs font-medium text-foreground truncate">{file.name}</p>
                     {uploading && (
                       <div className="mt-1.5 h-1.5 w-full bg-border rounded-full overflow-hidden">
                         <div
@@ -95,14 +95,14 @@ const StepUpload = ({ onError }: StepUploadProps) => {
                       </div>
                     )}
                     {!uploading && progress === 100 && (
-                      <p className="text-xs text-step-completed font-medium mt-0.5">Concluido</p>
+                      <p className="text-[10px] text-step-completed font-medium mt-0.5">Concluido</p>
                     )}
                   </div>
                   <button
                     onClick={() => removeFile(index)}
-                    className="w-8 h-8 rounded-full bg-muted flex items-center justify-center hover:bg-destructive/10 transition-colors"
+                    className="w-7 h-7 rounded-full bg-muted flex items-center justify-center hover:bg-destructive/10 transition-colors"
                   >
-                    <X className="w-3.5 h-3.5 text-muted-foreground" />
+                    <X className="w-3 h-3 text-muted-foreground" />
                   </button>
                 </div>
               )}
@@ -118,11 +118,11 @@ const StepUpload = ({ onError }: StepUploadProps) => {
         })}
       </div>
 
-      <p className="text-sm font-semibold text-foreground underline mt-3 cursor-pointer">
+      <p className="text-xs font-semibold text-foreground underline mt-3 cursor-pointer text-center">
         Não estou a conseguir subir a minha Foto.
       </p>
 
-      <p className="text-xs text-muted-foreground mt-2">{ACCEPTED_LABEL}</p>
+      <p className="text-[10px] text-muted-foreground mt-2 text-center">{ACCEPTED_LABEL}</p>
     </div>
   );
 };
