@@ -63,10 +63,8 @@ export const BuilderProvider: React.FC<BuilderProviderProps> = ({ children, conf
     if (!configLoading && !defaultsApplied) {
       const defaultFrame = config.frameColors[0]?.prefix ?? null;
       const defaultFundo = config.backgroundColors[0]?.name ?? null;
-      const defaultSize = config.sizes[0]?.size ?? null;
       setState((prev) => ({
         ...prev,
-        tamanho: prev.tamanho ?? defaultSize,
         cores: {
           frame: prev.cores.frame ?? defaultFrame,
           fundo: prev.cores.fundo ?? defaultFundo,
