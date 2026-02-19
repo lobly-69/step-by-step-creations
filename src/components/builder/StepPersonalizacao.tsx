@@ -62,12 +62,12 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
         <p className="text-xs font-semibold text-foreground mb-1">Escolhe o Tamanho:</p>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-1.5">
           {config.sizes.map((opt) => {
-            const selected = state.tamanho === opt.id;
+            const selected = state.tamanho === opt.size;
 
             return (
               <button
-                key={opt.id}
-                onClick={() => { setTamanho(opt.id); onError(null); }}
+                key={opt.size}
+                onClick={() => { setTamanho(opt.size); onError(null); }}
                 className={`relative rounded-xl border-2 overflow-hidden transition-all duration-200 text-center ${
                   selected
                     ? "border-promo shadow-lg ring-2 ring-promo/30"

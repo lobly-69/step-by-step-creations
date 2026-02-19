@@ -63,7 +63,7 @@ export const BuilderProvider: React.FC<BuilderProviderProps> = ({ children, conf
     if (!configLoading && !defaultsApplied) {
       const defaultFrame = config.frameColors[0]?.prefix ?? null;
       const defaultFundo = config.backgroundColors[0]?.name ?? null;
-      const defaultSize = config.sizes[0]?.id ?? null;
+      const defaultSize = config.sizes[0]?.size ?? null;
       setState((prev) => ({
         ...prev,
         tamanho: prev.tamanho ?? defaultSize,
@@ -160,13 +160,13 @@ export const BuilderProvider: React.FC<BuilderProviderProps> = ({ children, conf
       ? { oldPrice: defaultSize.price, newPrice: defaultSize.promo_price }
       : { oldPrice: 49.9, newPrice: 39.9 };
     if (!state.tamanho) return fallback;
-    const size = config.sizes.find((s) => s.id === state.tamanho);
+    const size = config.sizes.find((s) => s.size === state.tamanho);
     return size ? { oldPrice: size.price, newPrice: size.promo_price } : fallback;
   }, [state.tamanho, config.sizes]);
 
   const getMockupUrl = useCallback(() => {
     if (!state.tamanho || !state.cores.frame || !state.cores.fundo) return null;
-    const selectedSize = config.sizes.find((s) => s.id === state.tamanho);
+    const selectedSize = config.sizes.find((s) => s.size === state.tamanho);
     if (!selectedSize) return null;
     const variant = config.mockupVariants.find(
       (v) =>
