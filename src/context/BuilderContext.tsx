@@ -1,18 +1,12 @@
-import React, { createContext, useContext, useState, useCallback, useEffect, useRef } from "react";
+import React, { createContext, useContext, useState, useCallback, useEffect } from "react";
 import { stepsConfig } from "@/config/stepsConfig";
 import type { AppConfig } from "@/lib/configTypes";
-import {
-  createSession,
-  updateSessionStep,
-  createUploadUrls,
-  uploadFileToSignedUrl,
-} from "@/hooks/useSession";
 
 export interface BuilderState {
   tamanho: string | null;
   cores: {
-    frame: string | null;
-    fundo: string | null;
+    frame: string | null;   // stores frame prefix
+    fundo: string | null;    // stores background name
   };
   upload: {
     files: (File | null)[];
@@ -27,7 +21,6 @@ interface BuilderContextType {
   configLoading: boolean;
   configOffline: boolean;
   visitedSteps: Set<string>;
-  sessionId: string | null;
   setTamanho: (id: string) => void;
   setFrame: (prefix: string) => void;
   setFundo: (name: string) => void;
@@ -35,7 +28,6 @@ interface BuilderContextType {
   removeFile: (index: number) => void;
   setProgress: (index: number, value: number) => void;
   markStepVisited: (stepId: string) => void;
-  notifyUploadStep: () => void;
   isStepComplete: (stepId: string) => boolean;
   canAccessStep: (stepIndex: number) => boolean;
   getCurrentPrice: () => { oldPrice: number; newPrice: number };
@@ -57,14 +49,7 @@ interface BuilderProviderProps {
   configOffline: boolean;
 }
 
-const SESSION_KEY = "builder_session_id";
-
-export const BuilderProvider: React.FC<BuilderProviderProps> = ({
-  children,
-  config,
-  configLoading,
-  configOffline,
-}) => {
+export const BuilderProvider: React.FC<BuilderProviderProps> = ({ children, config, configLoading, configOffline }) => {
   const [state, setState] = useState<BuilderState>({
     tamanho: null,
     cores: { frame: null, fundo: null },
@@ -72,31 +57,8 @@ export const BuilderProvider: React.FC<BuilderProviderProps> = ({
   });
   const [visitedSteps, setVisitedSteps] = useState<Set<string>>(new Set());
   const [defaultsApplied, setDefaultsApplied] = useState(false);
-  const [sessionId, setSessionId] = useState<string | null>(
-    () => localStorage.getItem(SESSION_KEY)
-  );
 
-  // ── Session init ──────────────────────────────────────────────────────────
-  const sessionInitialized = useRef(false);
-  useEffect(() => {
-    if (sessionInitialized.current) return;
-    sessionInitialized.current = true;
-
-    const existing = localStorage.getItem(SESSION_KEY);
-    if (existing) {
-      setSessionId(existing);
-      return;
-    }
-
-    createSession("https://lobly.pt/builder")
-      .then((id) => {
-        localStorage.setItem(SESSION_KEY, id);
-        setSessionId(id);
-      })
-      .catch((err) => console.warn("create_session failed", err));
-  }, []);
-
-  // ── Config defaults ───────────────────────────────────────────────────────
+  // Apply defaults once config is loaded
   useEffect(() => {
     if (!configLoading && !defaultsApplied) {
       const defaultFrame = config.frameColors[0]?.prefix ?? null;
@@ -112,7 +74,6 @@ export const BuilderProvider: React.FC<BuilderProviderProps> = ({
     }
   }, [configLoading, config, defaultsApplied]);
 
-  // ── Helpers ───────────────────────────────────────────────────────────────
   const markStepVisited = useCallback((stepId: string) => {
     setVisitedSteps((prev) => {
       if (prev.has(stepId)) return prev;
@@ -122,90 +83,27 @@ export const BuilderProvider: React.FC<BuilderProviderProps> = ({
     });
   }, []);
 
-  // ── Setters with side-effects ─────────────────────────────────────────────
-  const setTamanho = useCallback(
-    (id: string) => {
-      setState((prev) => ({ ...prev, tamanho: id }));
-      if (sessionId) {
-        updateSessionStep({ session_id: sessionId, current_step: "SIZE", size: id }).catch(
-          (err) => console.warn("update_session_step SIZE failed", err)
-        );
-      }
-    },
-    [sessionId]
-  );
+  const setTamanho = useCallback((id: string) => {
+    setState((prev) => ({ ...prev, tamanho: id }));
+  }, []);
 
-  const setFrame = useCallback(
-    (prefix: string) => {
-      setState((prev) => {
-        const fundo = prev.cores.fundo;
-        if (sessionId && fundo) {
-          updateSessionStep({
-            session_id: sessionId,
-            current_step: "COLORS",
-            frame_prefix: prefix,
-            background_name: fundo,
-          }).catch((err) => console.warn("update_session_step COLORS failed", err));
-        }
-        return { ...prev, cores: { ...prev.cores, frame: prefix } };
-      });
-    },
-    [sessionId]
-  );
+  const setFrame = useCallback((prefix: string) => {
+    setState((prev) => ({ ...prev, cores: { ...prev.cores, frame: prefix } }));
+  }, []);
 
-  const setFundo = useCallback(
-    (name: string) => {
-      setState((prev) => {
-        const frame = prev.cores.frame;
-        if (sessionId && frame) {
-          updateSessionStep({
-            session_id: sessionId,
-            current_step: "COLORS",
-            frame_prefix: frame,
-            background_name: name,
-          }).catch((err) => console.warn("update_session_step COLORS failed", err));
-        }
-        return { ...prev, cores: { ...prev.cores, fundo: name } };
-      });
-    },
-    [sessionId]
-  );
+  const setFundo = useCallback((name: string) => {
+    setState((prev) => ({ ...prev, cores: { ...prev.cores, fundo: name } }));
+  }, []);
 
-  // ── Upload ────────────────────────────────────────────────────────────────
-  const addFile = useCallback(
-    (index: number, file: File) => {
-      setState((prev) => {
-        const files = [...prev.upload.files];
-        const progress = [...prev.upload.progress];
-        files[index] = file;
-        progress[index] = 0;
-        return { ...prev, upload: { ...prev.upload, files, progress } };
-      });
-
-      if (!sessionId) return;
-
-      const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
-      createUploadUrls(sessionId, [{ ext }])
-        .then((uploads) => {
-          const entry = uploads[0];
-          if (!entry) throw new Error("No signed URL returned");
-          return uploadFileToSignedUrl(entry.signed_url, file, (pct) => {
-            setProgress(index, pct);
-          });
-        })
-        .catch((err) => {
-          console.warn("Upload failed, falling back to local progress", err);
-          // Fallback: simulate progress so the UI doesn't get stuck
-          let p = 0;
-          const iv = setInterval(() => {
-            p += Math.random() * 25 + 10;
-            if (p >= 100) { p = 100; clearInterval(iv); }
-            setProgress(index, Math.min(p, 100));
-          }, 200);
-        });
-    },
-    [sessionId] // eslint-disable-line react-hooks/exhaustive-deps
-  );
+  const addFile = useCallback((index: number, file: File) => {
+    setState((prev) => {
+      const files = [...prev.upload.files];
+      const progress = [...prev.upload.progress];
+      files[index] = file;
+      progress[index] = 0;
+      return { ...prev, upload: { ...prev.upload, files, progress } };
+    });
+  }, []);
 
   const removeFile = useCallback((index: number) => {
     setState((prev) => {
@@ -225,24 +123,11 @@ export const BuilderProvider: React.FC<BuilderProviderProps> = ({
     });
   }, []);
 
-  // Notify backend when user reaches UPLOAD step
-  const notifyUploadStep = useCallback(() => {
-    if (!sessionId) return;
-    updateSessionStep({ session_id: sessionId, current_step: "UPLOAD" }).catch((err) =>
-      console.warn("update_session_step UPLOAD failed", err)
-    );
-  }, [sessionId]);
-
-  // ── Completion logic ──────────────────────────────────────────────────────
   const isStepComplete = useCallback(
     (stepId: string) => {
       switch (stepId) {
         case "personalizacao":
-          return (
-            state.tamanho !== null &&
-            state.cores.frame !== null &&
-            state.cores.fundo !== null
-          );
+          return state.tamanho !== null && state.cores.frame !== null && state.cores.fundo !== null;
         case "upload": {
           const hasFile = state.upload.files.some((f) => f !== null);
           const noInProgress = state.upload.progress.every(
@@ -270,13 +155,11 @@ export const BuilderProvider: React.FC<BuilderProviderProps> = ({
   const getCurrentPrice = useCallback(() => {
     const defaultSize = config.sizes[0];
     const fallback = defaultSize
-      ? { oldPrice: defaultSize.price, newPrice: defaultSize.promo_price ?? defaultSize.price }
+      ? { oldPrice: defaultSize.price, newPrice: defaultSize.promo_price }
       : { oldPrice: 49.9, newPrice: 39.9 };
     if (!state.tamanho) return fallback;
     const size = config.sizes.find((s) => s.size === state.tamanho);
-    return size
-      ? { oldPrice: size.price, newPrice: size.promo_price ?? size.price }
-      : fallback;
+    return size ? { oldPrice: size.price, newPrice: size.promo_price } : fallback;
   }, [state.tamanho, config.sizes]);
 
   const getMockupUrl = useCallback(() => {
@@ -300,7 +183,6 @@ export const BuilderProvider: React.FC<BuilderProviderProps> = ({
         configLoading,
         configOffline,
         visitedSteps,
-        sessionId,
         setTamanho,
         setFrame,
         setFundo,
@@ -308,7 +190,6 @@ export const BuilderProvider: React.FC<BuilderProviderProps> = ({
         removeFile,
         setProgress,
         markStepVisited,
-        notifyUploadStep,
         isStepComplete,
         canAccessStep,
         getCurrentPrice,

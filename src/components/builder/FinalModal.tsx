@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { X } from "lucide-react";
 import helpdeskImg from "@/assets/helpdesk-pixar.jpg";
-import { useBuilder } from "@/context/BuilderContext";
-import { finalizeSession } from "@/hooks/useSession";
 
 interface FinalModalProps {
   isOpen: boolean;
@@ -18,9 +16,9 @@ const countryCodes = [
 
 const nameRegex = /^[^\d]*$/; // no digits allowed
 
-const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
-  const { sessionId } = useBuilder();
 
+
+const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [firstNameTouched, setFirstNameTouched] = useState(false);
@@ -30,76 +28,11 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
   const [customCode, setCustomCode] = useState("");
   const [showEmail, setShowEmail] = useState(false);
   const [email, setEmail] = useState("");
-  const [submitting, setSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const firstNameError =
-    firstNameTouched &&
-    (firstName.trim().replace(/\s{2,}/g, " ").length < 2 || !nameRegex.test(firstName.trim()));
-  const lastNameError =
-    lastNameTouched &&
-    (lastName.trim().replace(/\s{2,}/g, " ").length < 2 || !nameRegex.test(lastName.trim()));
+  const firstNameError = firstNameTouched && (firstName.trim().replace(/\s{2,}/g, " ").length < 2 || !nameRegex.test(firstName.trim()));
+  const lastNameError = lastNameTouched && (lastName.trim().replace(/\s{2,}/g, " ").length < 2 || !nameRegex.test(lastName.trim()));
 
   if (!isOpen) return null;
-
-  const getDialCode = () => {
-    if (country === "outro") return customCode;
-    return countryCodes.find((c) => c.id === country)?.code ?? "";
-  };
-
-  const handleSubmit = async () => {
-    // Touch all fields to show errors
-    setFirstNameTouched(true);
-    setLastNameTouched(true);
-
-    const cleanFirst = firstName.trim().replace(/\s{2,}/g, " ");
-    const cleanLast = lastName.trim().replace(/\s{2,}/g, " ");
-
-    const firstValid = cleanFirst.length >= 2 && nameRegex.test(cleanFirst);
-    const lastValid = cleanLast.length >= 2 && nameRegex.test(cleanLast);
-
-    if (!firstValid || !lastValid) return;
-
-    if (!showEmail && phone.trim().length < 5) {
-      setSubmitError("Insere um número de WhatsApp válido.");
-      return;
-    }
-    if (showEmail && !email.includes("@")) {
-      setSubmitError("Insere um email válido.");
-      return;
-    }
-
-    if (!sessionId) {
-      setSubmitError("Sessão não encontrada. Recarrega a página e tenta de novo.");
-      return;
-    }
-
-    setSubmitError(null);
-    setSubmitting(true);
-
-    try {
-      const whatsappFull = !showEmail
-        ? `${getDialCode()}${phone.trim()}`
-        : null;
-
-      await finalizeSession({
-        session_id: sessionId,
-        first_name: cleanFirst,
-        last_name: cleanLast,
-        whatsapp_full: whatsappFull,
-        email: showEmail ? email.trim() : null,
-      });
-
-      // Clear stored session so a new one is created next time
-      localStorage.removeItem("builder_session_id");
-
-      window.location.href = "https://lobly.pt/sucesso/";
-    } catch (err: any) {
-      console.error("finalize_session error", err);
-      setSubmitError("Ocorreu um erro. Tenta de novo.");
-      setSubmitting(false);
-    }
-  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center">
@@ -180,13 +113,7 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
                         </option>
                       ))}
                     </select>
-                    <svg
-                      className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground pointer-events-none"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                    >
+                    <svg className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                     </svg>
                   </div>
@@ -243,16 +170,8 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
               </>
             )}
 
-            {submitError && (
-              <p className="text-[11px] text-destructive text-center">{submitError}</p>
-            )}
-
-            <button
-              onClick={handleSubmit}
-              disabled={submitting}
-              className="w-full bg-promo text-promo-foreground font-semibold text-sm py-3 rounded-lg active:scale-[0.98] transition-transform duration-150 mt-1 disabled:opacity-60"
-            >
-              {submitting ? "A enviar..." : "Finalizar pedido"}
+            <button className="w-full bg-promo text-promo-foreground font-semibold text-sm py-3 rounded-lg active:scale-[0.98] transition-transform duration-150 mt-1">
+              Finalizar pedido
             </button>
             <p className="text-[8px] md:text-[10px] text-muted-foreground text-center mt-0 leading-[1.2]">
               Apenas usamos o teu contacto para enviar a tua Ilustração Personalizada. Nada de Spam nem Publicidade
