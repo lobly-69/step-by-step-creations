@@ -40,7 +40,7 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
 
         {/* Background colors */}
         <div className="flex-[5]">
-          <p className="text-[11px] font-semibold text-foreground mb-1">Fundo:</p>
+          <p className="text-[11px] font-semibold text-foreground mb-1">Cor de Fundo:</p>
           <div className="grid grid-cols-5 gap-1.5">
             {config.backgroundColors.map((c) => {
               const selected = state.cores.fundo === c.name;
@@ -70,16 +70,16 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
               <button
                 key={opt.size}
                 onClick={() => { setTamanho(opt.size); onError(null); }}
-                className={`relative rounded-xl border-2 overflow-visible transition-all duration-200 text-center ${
-                  selected
-                    ? "border-promo shadow-lg ring-2 ring-promo/30"
-                    : "border-border bg-card hover:border-primary/40"
-                }`}
+              className={`relative rounded-xl border-2 overflow-hidden transition-all duration-200 text-center ${
+                selected
+                  ? "border-promo shadow-lg ring-2 ring-promo/30"
+                  : "border-border bg-card hover:border-primary/40"
+              }`}
               >
-                <div className="relative overflow-visible">
-                  <img src={opt.bg_img || cardImg} alt="" className="w-full aspect-square object-cover" />
-                  <div className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-promo text-promo-foreground text-[8px] font-bold flex items-center justify-center">
-                    -{opt.discount}%
+                <div className="relative">
+                  <img src={opt.bg_img || cardImg} alt="" className="w-full aspect-square object-cover rounded-bl-lg" />
+                  <div className="absolute top-0 right-0 w-10 h-10 bg-promo rounded-bl-[14px] flex items-start justify-end">
+                    <span className="text-promo-foreground text-[8px] font-bold mt-[5px] mr-[5px]">-{opt.discount}%</span>
                   </div>
                   <div className="absolute bottom-1 right-1 bg-white/90 text-foreground text-[8px] font-semibold px-1.5 py-0.5 rounded-md">
                     {opt.label}
