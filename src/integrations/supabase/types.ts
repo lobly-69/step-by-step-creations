@@ -254,6 +254,7 @@ export type Database = {
         Row: {
           active: boolean | null
           created_at: string | null
+          display_name_pt: string | null
           display_order: number
           hex: string
           id: number
@@ -263,6 +264,7 @@ export type Database = {
         Insert: {
           active?: boolean | null
           created_at?: string | null
+          display_name_pt?: string | null
           display_order: number
           hex: string
           id?: number
@@ -272,6 +274,7 @@ export type Database = {
         Update: {
           active?: boolean | null
           created_at?: string | null
+          display_name_pt?: string | null
           display_order?: number
           hex?: string
           id?: number
