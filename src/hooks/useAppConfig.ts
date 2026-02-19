@@ -35,6 +35,7 @@ export function useAppConfig() {
   const [config, setConfig] = useState<AppConfig | null>(null);
   const [loading, setLoading] = useState(true);
   const [offline, setOffline] = useState(false);
+  const [fetchError, setFetchError] = useState<{ message: string; statusCode?: number } | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -58,10 +59,12 @@ export function useAppConfig() {
         const hasError = sizesRes.error || bgRes.error || frameRes.error || mockupRes.error;
 
         if (hasError) {
+          const firstErr = sizesRes.error || bgRes.error || frameRes.error || mockupRes.error;
           console.warn("Supabase fetch error, using fallback", { sizesRes, bgRes, frameRes, mockupRes });
           if (!cancelled) {
             setConfig(fallbackConfig);
             setOffline(true);
+            setFetchError({ message: firstErr?.message || "Unknown error", statusCode: (firstErr as any)?.code });
           }
         } else {
           if (!cancelled) {
@@ -73,11 +76,12 @@ export function useAppConfig() {
             });
           }
         }
-      } catch (err) {
+      } catch (err: any) {
         console.warn("Supabase fetch failed, using fallback", err);
         if (!cancelled) {
           setConfig(fallbackConfig);
           setOffline(true);
+          setFetchError({ message: err?.message || String(err) });
         }
       } finally {
         if (!cancelled) setLoading(false);
@@ -88,5 +92,5 @@ export function useAppConfig() {
     return () => { cancelled = true; };
   }, []);
 
-  return { config: config || fallbackConfig, loading, offline };
+  return { config: config || fallbackConfig, loading, offline, fetchError };
 }
