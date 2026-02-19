@@ -13,8 +13,8 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
 
   return (
     <div>
-      <h2 className="text-base font-bold text-foreground leading-tight mb-0">Personaliza a tua Obra Prima</h2>
-      <p className="text-xs text-muted-foreground leading-tight mb-2">Define as cores e o tamanho que melhor combinam com o teu espaço...</p>
+      <h2 className="text-base font-bold text-foreground leading-tight text-center mb-0">Personaliza a tua Obra Prima</h2>
+      <p className="text-xs text-muted-foreground leading-tight text-center mb-2">Define as cores e o tamanho que melhor combinam com o teu espaço...</p>
 
       {/* Cores — moldura e fundo lado a lado */}
       <div className="flex gap-[24px] mb-3 items-start">
