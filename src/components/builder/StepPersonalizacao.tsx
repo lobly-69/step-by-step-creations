@@ -13,8 +13,8 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
 
   return (
     <div>
-      <h2 className="text-base font-bold text-foreground leading-tight mb-0">Personaliza o teu quadro</h2>
-      <p className="text-xs text-muted-foreground leading-tight mb-2">Escolhe cores e tamanho.</p>
+      <h2 className="text-base font-bold text-foreground leading-tight mb-0">Personaliza a tua Obra Prima</h2>
+      <p className="text-xs text-muted-foreground leading-tight mb-2">Define as cores e o tamanho que melhor combinam com o teu espaço...</p>
 
       {/* Cores — moldura e fundo lado a lado */}
       <div className="flex gap-[24px] mb-3 items-start">
@@ -77,7 +77,7 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
               }`}
               >
                 <div className="relative">
-                  <img src={opt.bg_img || cardImg} alt="" className="w-full aspect-square object-cover rounded-bl-lg" />
+                  <img src={opt.bg_img || cardImg} alt="" className="w-full aspect-square object-cover" />
                   <div className="absolute top-0 right-0 w-10 h-6 bg-promo rounded-bl-[14px] flex items-start justify-end">
                     <span className="text-promo-foreground text-[11px] font-bold mt-[3px] mr-[5px]">-{opt.discount}%</span>
                   </div>
@@ -91,7 +91,7 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
                       {formatPrice(opt.price)}
                     </span>
                     <span className="text-[15px] font-bold text-foreground leading-none mt-0.5">
-                      {formatPrice(opt.promo_price)}
+                      {formatPrice(opt.promo_price)}*
                     </span>
                   </div>
                 </div>
@@ -106,6 +106,7 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
             );
           })}
         </div>
+        <p className="text-[10px] text-muted-foreground text-center mt-1.5">O Tamanho poderá ser alterado depois</p>
       </div>
     </div>
   );

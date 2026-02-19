@@ -42,9 +42,9 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
         <img src={helpdeskImg} alt="" className="w-full h-auto object-contain" />
 
         <div className="p-5">
-          <h2 className="text-lg font-bold text-foreground mb-0.5">Quase lá!</h2>
+          <h2 className="text-lg font-bold text-foreground mb-0.5">Estamos quase lá...</h2>
           <p className="text-xs text-muted-foreground mb-4">
-            Deixa os teus dados e entramos em contacto.
+            Deixa-nos o teu WhatsApp para te enviarmos o Desenho assim que estiver pronto. E não te preocupes pois não tens que pagar nada agora e só avançamos se Gostares do Resultado Final.
           </p>
 
           <div className="flex flex-col gap-3">
@@ -55,7 +55,7 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="O teu nome"
+                placeholder="ex: João Silva"
                 className="w-full rounded-lg border border-input bg-card px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
               />
             </div>
@@ -94,7 +94,8 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
                     type="tel"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    placeholder="Número"
+                    placeholder="ex: 926948901"
+                    inputMode="numeric"
                     className="flex-1 min-w-0 rounded-lg border border-input bg-card px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                   />
                 </div>
@@ -137,7 +138,7 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
               Finalizar pedido
             </button>
             <p className="text-[10px] text-muted-foreground text-center mt-2">
-              Só pagas depois de aprovares o Desenho Final
+              Apenas usamos o teu contacto para enviar a tua Ilustração Personalizada. Nada de Spam nem Publicidade
             </p>
           </div>
           <div className="h-[15px]" />
