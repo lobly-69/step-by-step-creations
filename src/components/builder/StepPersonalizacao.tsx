@@ -78,10 +78,10 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
               >
                 <div className="relative">
                   <img src={opt.bg_img || cardImg} alt="" className="w-full aspect-square object-cover rounded-bl-lg" />
-                  <div className="absolute top-0 right-0 w-10 h-10 bg-promo rounded-bl-[14px] flex items-start justify-end">
-                    <span className="text-promo-foreground text-[8px] font-bold mt-[5px] mr-[5px]">-{opt.discount}%</span>
+                  <div className="absolute top-0 right-0 w-10 h-6 bg-promo rounded-bl-[14px] flex items-start justify-end">
+                    <span className="text-promo-foreground text-[11px] font-bold mt-[3px] mr-[5px]">-{opt.discount}%</span>
                   </div>
-                  <div className="absolute bottom-1 right-1 bg-white/90 text-foreground text-[8px] font-semibold px-1.5 py-0.5 rounded-md">
+                  <div className="absolute bottom-1 right-1 bg-white/90 text-foreground text-[9px] font-semibold px-1.5 py-0.5 rounded-md">
                     {opt.label}
                   </div>
                 </div>
