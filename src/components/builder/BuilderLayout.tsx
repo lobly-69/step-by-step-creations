@@ -31,19 +31,19 @@ const BuilderLayout = ({ currentStepIndex, children, onAdvance, onStepClick, bot
   }, [toastMessage, onToastDismiss]);
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center">
-      <div className="w-full max-w-[600px] mx-auto md:my-6 md:rounded-2xl md:shadow-lg md:border md:border-border bg-card flex flex-col h-screen md:h-[min(92vh,900px)] overflow-hidden relative">
+    <div className="min-h-[100dvh] bg-background flex items-center justify-center" style={{ minHeight: '100dvh' }}>
+      <div className="w-full max-w-[600px] mx-auto md:my-6 md:rounded-2xl md:shadow-lg md:border md:border-border bg-card flex flex-col min-h-[100dvh] md:min-h-0 md:h-[min(92vh,900px)] relative">
         <div className="flex-shrink-0">
           <MockupImage />
           <StepIndicator currentStepIndex={currentStepIndex} onStepClick={onStepClick} />
         </div>
-        <div className="flex-1 overflow-y-auto px-5 py-3 pb-[80px]">
+        <div className="flex-1 overflow-y-auto px-5 py-3" style={{ paddingBottom: 'calc(70px + env(safe-area-inset-bottom, 0px))' }}>
           <div className="slide-step">{children}</div>
         </div>
 
         {/* Toast above bottom bar */}
         {visible && toastMessage && (
-          <div className="absolute bottom-[73px] left-3 right-3 z-50 bg-destructive text-destructive-foreground rounded-lg px-4 py-3 flex items-center justify-between shadow-lg animate-in fade-in slide-in-from-bottom-2 duration-200">
+          <div className="fixed bottom-[calc(60px+env(safe-area-inset-bottom,0px))] left-3 right-3 max-w-[600px] mx-auto z-50 bg-destructive text-destructive-foreground rounded-lg px-4 py-3 flex items-center justify-between shadow-lg animate-in fade-in slide-in-from-bottom-2 duration-200">
             <span className="text-sm font-medium">{toastMessage}</span>
             <button
               onClick={() => { setVisible(false); onToastDismiss?.(); }}
@@ -54,8 +54,10 @@ const BuilderLayout = ({ currentStepIndex, children, onAdvance, onStepClick, bot
           </div>
         )}
 
-        <div className="absolute bottom-0 left-0 right-0 z-40" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
-          <BottomBar onAdvance={onAdvance} buttonLabel={bottomLabel} />
+        <div className="fixed bottom-0 left-0 right-0 z-40" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
+          <div className="max-w-[600px] mx-auto">
+            <BottomBar onAdvance={onAdvance} buttonLabel={bottomLabel} />
+          </div>
         </div>
       </div>
     </div>
