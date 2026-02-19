@@ -1,26 +1,12 @@
-import React, { createContext, useContext, useState, useCallback } from "react";
+import React, { createContext, useContext, useState, useCallback, useEffect } from "react";
 import { stepsConfig } from "@/config/stepsConfig";
-
-export interface SizeOption {
-  id: string;
-  label: string;
-  dimensions: string;
-  oldPrice: number;
-  newPrice: number;
-}
-
-export const sizeOptions: SizeOption[] = [
-  { id: "20x30", label: "Discreto", dimensions: "20x30", oldPrice: 49.9, newPrice: 39.9 },
-  { id: "30x40", label: "Equilibrado", dimensions: "30x40", oldPrice: 74.9, newPrice: 59.9 },
-  { id: "40x50", label: "Impactante", dimensions: "40x50", oldPrice: 99.9, newPrice: 79.9 },
-  { id: "70x50", label: "Marcante", dimensions: "70x50", oldPrice: 124.9, newPrice: 99.9 },
-];
+import type { AppConfig } from "@/lib/configTypes";
 
 export interface BuilderState {
   tamanho: string | null;
   cores: {
-    frame: string | null;
-    fundo: string | null;
+    frame: string | null;   // stores frame prefix
+    fundo: string | null;    // stores background name
   };
   upload: {
     files: (File | null)[];
@@ -31,10 +17,13 @@ export interface BuilderState {
 
 interface BuilderContextType {
   state: BuilderState;
+  config: AppConfig;
+  configLoading: boolean;
+  configOffline: boolean;
   visitedSteps: Set<string>;
   setTamanho: (id: string) => void;
-  setFrame: (color: string) => void;
-  setFundo: (color: string) => void;
+  setFrame: (prefix: string) => void;
+  setFundo: (name: string) => void;
   addFile: (index: number, file: File) => void;
   removeFile: (index: number) => void;
   setProgress: (index: number, value: number) => void;
@@ -42,6 +31,7 @@ interface BuilderContextType {
   isStepComplete: (stepId: string) => boolean;
   canAccessStep: (stepIndex: number) => boolean;
   getCurrentPrice: () => { oldPrice: number; newPrice: number };
+  getMockupUrl: () => string | null;
 }
 
 const BuilderContext = createContext<BuilderContextType | null>(null);
@@ -52,13 +42,39 @@ export const useBuilder = () => {
   return ctx;
 };
 
-export const BuilderProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+interface BuilderProviderProps {
+  children: React.ReactNode;
+  config: AppConfig;
+  configLoading: boolean;
+  configOffline: boolean;
+}
+
+export const BuilderProvider: React.FC<BuilderProviderProps> = ({ children, config, configLoading, configOffline }) => {
   const [state, setState] = useState<BuilderState>({
     tamanho: null,
-    cores: { frame: "preto", fundo: "azul" },
+    cores: { frame: null, fundo: null },
     upload: { files: [null, null, null], progress: [0, 0, 0], completed: false },
   });
   const [visitedSteps, setVisitedSteps] = useState<Set<string>>(new Set());
+  const [defaultsApplied, setDefaultsApplied] = useState(false);
+
+  // Apply defaults once config is loaded
+  useEffect(() => {
+    if (!configLoading && !defaultsApplied) {
+      const defaultFrame = config.frameColors[0]?.prefix ?? null;
+      const defaultFundo = config.backgroundColors[0]?.name ?? null;
+      const defaultSize = config.sizes[0]?.id ?? null;
+      setState((prev) => ({
+        ...prev,
+        tamanho: prev.tamanho ?? defaultSize,
+        cores: {
+          frame: prev.cores.frame ?? defaultFrame,
+          fundo: prev.cores.fundo ?? defaultFundo,
+        },
+      }));
+      setDefaultsApplied(true);
+    }
+  }, [configLoading, config, defaultsApplied]);
 
   const markStepVisited = useCallback((stepId: string) => {
     setVisitedSteps((prev) => {
@@ -73,12 +89,12 @@ export const BuilderProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setState((prev) => ({ ...prev, tamanho: id }));
   }, []);
 
-  const setFrame = useCallback((color: string) => {
-    setState((prev) => ({ ...prev, cores: { ...prev.cores, frame: color } }));
+  const setFrame = useCallback((prefix: string) => {
+    setState((prev) => ({ ...prev, cores: { ...prev.cores, frame: prefix } }));
   }, []);
 
-  const setFundo = useCallback((color: string) => {
-    setState((prev) => ({ ...prev, cores: { ...prev.cores, fundo: color } }));
+  const setFundo = useCallback((name: string) => {
+    setState((prev) => ({ ...prev, cores: { ...prev.cores, fundo: name } }));
   }, []);
 
   const addFile = useCallback((index: number, file: File) => {
@@ -139,15 +155,35 @@ export const BuilderProvider: React.FC<{ children: React.ReactNode }> = ({ child
   );
 
   const getCurrentPrice = useCallback(() => {
-    if (!state.tamanho) return { oldPrice: 49.9, newPrice: 39.9 };
-    const size = sizeOptions.find((s) => s.id === state.tamanho);
-    return size ? { oldPrice: size.oldPrice, newPrice: size.newPrice } : { oldPrice: 49.9, newPrice: 39.9 };
-  }, [state.tamanho]);
+    const defaultSize = config.sizes[0];
+    const fallback = defaultSize
+      ? { oldPrice: defaultSize.price, newPrice: defaultSize.promo_price }
+      : { oldPrice: 49.9, newPrice: 39.9 };
+    if (!state.tamanho) return fallback;
+    const size = config.sizes.find((s) => s.id === state.tamanho);
+    return size ? { oldPrice: size.price, newPrice: size.promo_price } : fallback;
+  }, [state.tamanho, config.sizes]);
+
+  const getMockupUrl = useCallback(() => {
+    if (!state.tamanho || !state.cores.frame || !state.cores.fundo) return null;
+    const selectedSize = config.sizes.find((s) => s.id === state.tamanho);
+    if (!selectedSize) return null;
+    const variant = config.mockupVariants.find(
+      (v) =>
+        v.size === selectedSize.size &&
+        v.frame_prefix === state.cores.frame &&
+        v.background_name === state.cores.fundo
+    );
+    return variant?.image_url ?? null;
+  }, [state.tamanho, state.cores.frame, state.cores.fundo, config.sizes, config.mockupVariants]);
 
   return (
     <BuilderContext.Provider
       value={{
         state,
+        config,
+        configLoading,
+        configOffline,
         visitedSteps,
         setTamanho,
         setFrame,
@@ -159,6 +195,7 @@ export const BuilderProvider: React.FC<{ children: React.ReactNode }> = ({ child
         isStepComplete,
         canAccessStep,
         getCurrentPrice,
+        getMockupUrl,
       }}
     >
       {children}
