@@ -33,7 +33,7 @@ const BuilderLayout = ({ currentStepIndex, children, onAdvance, onStepClick, bot
   return (
     <div className="min-h-[100dvh] bg-background flex items-center justify-center" style={{ minHeight: '100dvh' }}>
       <div className="w-full max-w-[600px] mx-auto md:my-6 md:rounded-2xl md:shadow-lg md:border md:border-border bg-card flex flex-col min-h-[100dvh] md:min-h-0 md:h-[min(92vh,900px)] relative">
-        <div className="flex-shrink-0">
+        <div className="flex-shrink-0 sticky top-0 z-10 bg-card">
           <MockupImage />
           <StepIndicator currentStepIndex={currentStepIndex} onStepClick={onStepClick} />
         </div>
