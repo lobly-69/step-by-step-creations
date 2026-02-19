@@ -17,40 +17,46 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
       <p className="text-xs text-muted-foreground leading-tight mb-2">Escolhe cores e tamanho.</p>
 
       {/* Cores — moldura e fundo lado a lado */}
-      <div className="grid grid-cols-7 gap-x-2 gap-y-1 mb-3 items-start">
-        {/* Labels */}
-        <p className="col-span-2 text-[10px] font-semibold text-foreground">Cor da Moldura:</p>
-        <p className="col-span-5 text-[10px] font-semibold text-foreground">Cor do Fundo:</p>
-
+      <div className="flex gap-[15px] mb-3 items-start">
         {/* Frame colors */}
-        {config.frameColors.map((c) => {
-          const selected = state.cores.frame === c.prefix;
-          return (
-            <button
-              key={c.id}
-              onClick={() => { setFrame(c.prefix); onError(null); }}
-              className={`h-9 rounded-lg border-2 transition-all duration-200 ${
-                selected ? "border-promo ring-2 ring-promo/30 scale-105" : "border-border hover:border-primary/40"
-              }`}
-              style={{ backgroundColor: c.hex }}
-            />
-          );
-        })}
+        <div className="flex-[2]">
+          <p className="text-[10px] font-semibold text-foreground mb-1">Cor da Moldura:</p>
+          <div className="grid grid-cols-2 gap-1.5">
+            {config.frameColors.map((c) => {
+              const selected = state.cores.frame === c.prefix;
+              return (
+                <button
+                  key={c.id}
+                  onClick={() => { setFrame(c.prefix); onError(null); }}
+                  className={`h-9 rounded-lg border-2 transition-all duration-200 ${
+                    selected ? "border-promo ring-2 ring-promo/30 scale-105" : "border-border hover:border-primary/40"
+                  }`}
+                  style={{ backgroundColor: c.hex }}
+                />
+              );
+            })}
+          </div>
+        </div>
 
         {/* Background colors */}
-        {config.backgroundColors.map((c) => {
-          const selected = state.cores.fundo === c.name;
-          return (
-            <button
-              key={c.name}
-              onClick={() => { setFundo(c.name); onError(null); }}
-              className={`h-9 rounded-lg border-2 transition-all duration-200 ${
-                selected ? "border-promo ring-2 ring-promo/30 scale-105" : "border-border hover:border-primary/40"
-              }`}
-              style={{ backgroundColor: c.hex }}
-            />
-          );
-        })}
+        <div className="flex-[5]">
+          <p className="text-[10px] font-semibold text-foreground mb-1">Cor do Fundo:</p>
+          <div className="grid grid-cols-5 gap-1.5">
+            {config.backgroundColors.map((c) => {
+              const selected = state.cores.fundo === c.name;
+              return (
+                <button
+                  key={c.name}
+                  onClick={() => { setFundo(c.name); onError(null); }}
+                  className={`h-9 rounded-lg border-2 transition-all duration-200 ${
+                    selected ? "border-promo ring-2 ring-promo/30 scale-105" : "border-border hover:border-primary/40"
+                  }`}
+                  style={{ backgroundColor: c.hex }}
+                />
+              );
+            })}
+          </div>
+        </div>
       </div>
 
       {/* Tamanhos */}
