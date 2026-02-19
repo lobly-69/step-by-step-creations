@@ -24,11 +24,14 @@ const fallbackFrameColors: DbFrameColor[] = [
   { id: 2, name: "Branco", prefix: "branco", hex: "#ffffff", display_order: 2 },
 ];
 
+const FALLBACK_WHATSAPP = "+351913954511";
+
 const fallbackConfig: AppConfig = {
   sizes: fallbackSizes,
   backgroundColors: fallbackBackgroundColors,
   frameColors: fallbackFrameColors,
   mockupVariants: [],
+  supportWhatsapp: FALLBACK_WHATSAPP,
 };
 
 export function useAppConfig() {
@@ -44,13 +47,15 @@ export function useAppConfig() {
     // supabase client from integrations is always defined
 
       try {
-        const [sizesRes, bgRes, frameRes, mockupRes] = await Promise.all([
+        const [sizesRes, bgRes, frameRes, mockupRes, settingsRes] = await Promise.all([
           supabase.from("sizes").select("size, label, name, price, promo_price, discount, bg_img, display_order").eq("active", true).order("display_order", { ascending: true }),
           supabase.from("background_colors").select("name, hex, display_order").eq("active", true).order("display_order", { ascending: true }),
           supabase.from("frame_colors").select("id, name, prefix, hex, display_order").eq("active", true).order("display_order", { ascending: true }),
           supabase.from("mockup_variants").select("size, frame_prefix, background_name, image_url").eq("active", true),
+          supabase.from("builder_settings").select("value").eq("key", "support_whatsapp").limit(1).maybeSingle(),
         ]);
 
+        const whatsappNumber = settingsRes?.data?.value || FALLBACK_WHATSAPP;
         const hasError = sizesRes.error || bgRes.error || frameRes.error || mockupRes.error;
 
         if (hasError) {
@@ -68,6 +73,7 @@ export function useAppConfig() {
               backgroundColors: (bgRes.data as DbBackgroundColor[]) || fallbackBackgroundColors,
               frameColors: (frameRes.data as DbFrameColor[]) || fallbackFrameColors,
               mockupVariants: (mockupRes.data as DbMockupVariant[]) || [],
+              supportWhatsapp: whatsappNumber,
             });
           }
         }

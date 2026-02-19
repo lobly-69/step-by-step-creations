@@ -1,6 +1,7 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useBuilder } from "@/context/BuilderContext";
 import { Upload, X } from "lucide-react";
+import WhatsAppHelpModal from "./WhatsAppHelpModal";
 
 const ACCEPTED_TYPES = ".jpg,.jpeg,.png,.webp,.heic";
 const ACCEPTED_LABEL = "Ficheiros aceites: JPG, JPEG, PNG, WEBP e HEIC. Tamanho maximo: 30MB.";
@@ -18,6 +19,7 @@ interface StepUploadProps {
 const StepUpload = ({ onError }: StepUploadProps) => {
   const { state, addFile, removeFile, setProgress } = useBuilder();
   const fileInputRefs = useRef<(HTMLInputElement | null)[]>([null, null, null]);
+  const [helpModalOpen, setHelpModalOpen] = useState(false);
 
   const simulateUpload = (index: number) => {
     let progress = 0;
@@ -118,11 +120,16 @@ const StepUpload = ({ onError }: StepUploadProps) => {
         })}
       </div>
 
-      <p className="text-xs font-semibold text-foreground underline mt-3 cursor-pointer text-center">
+      <p
+        onClick={() => setHelpModalOpen(true)}
+        className="text-xs font-semibold text-foreground underline mt-3 cursor-pointer text-center"
+      >
         Não estou a conseguir subir a minha Foto.
       </p>
 
       <p className="text-[10px] text-muted-foreground mt-2 text-center">{ACCEPTED_LABEL}</p>
+
+      <WhatsAppHelpModal isOpen={helpModalOpen} onClose={() => setHelpModalOpen(false)} />
     </div>
   );
 };
