@@ -154,8 +154,10 @@ export type Database = {
           dial_code: string | null
           email: string | null
           entry_number: number | null
+          first_name: string | null
           frame_prefix: string | null
           image_count: number
+          last_name: string | null
           lifecycle_status: string
           name: string | null
           origin_url: string | null
@@ -175,8 +177,10 @@ export type Database = {
           dial_code?: string | null
           email?: string | null
           entry_number?: number | null
+          first_name?: string | null
           frame_prefix?: string | null
           image_count?: number
+          last_name?: string | null
           lifecycle_status?: string
           name?: string | null
           origin_url?: string | null
@@ -196,8 +200,10 @@ export type Database = {
           dial_code?: string | null
           email?: string | null
           entry_number?: number | null
+          first_name?: string | null
           frame_prefix?: string | null
           image_count?: number
+          last_name?: string | null
           lifecycle_status?: string
           name?: string | null
           origin_url?: string | null
