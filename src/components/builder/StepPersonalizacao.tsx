@@ -17,7 +17,7 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
       <p className="text-xs text-muted-foreground leading-tight mb-2">Escolhe cores e tamanho.</p>
 
       {/* Cores — moldura e fundo lado a lado */}
-      <div className="flex gap-[15px] mb-3 items-start">
+      <div className="flex gap-[24px] mb-3 items-start">
         {/* Frame colors */}
         <div className="flex-[2]">
           <p className="text-[10px] font-semibold text-foreground mb-1">Cor da Moldura:</p>
