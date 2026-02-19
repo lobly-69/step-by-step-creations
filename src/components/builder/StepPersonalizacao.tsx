@@ -20,7 +20,7 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
       <div className="flex gap-[24px] mb-3 items-start">
         {/* Frame colors */}
         <div className="flex-[2]">
-          <p className="text-[10px] font-semibold text-foreground mb-1">Cor da Moldura:</p>
+          <p className="text-[11px] font-semibold text-foreground mb-1">Moldura:</p>
           <div className="grid grid-cols-2 gap-1.5">
             {config.frameColors.map((c) => {
               const selected = state.cores.frame === c.prefix;
@@ -40,7 +40,7 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
 
         {/* Background colors */}
         <div className="flex-[5]">
-          <p className="text-[10px] font-semibold text-foreground mb-1">Cor do Fundo:</p>
+          <p className="text-[11px] font-semibold text-foreground mb-1">Fundo:</p>
           <div className="grid grid-cols-5 gap-1.5">
             {config.backgroundColors.map((c) => {
               const selected = state.cores.fundo === c.name;
@@ -70,15 +70,15 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
               <button
                 key={opt.size}
                 onClick={() => { setTamanho(opt.size); onError(null); }}
-                className={`relative rounded-xl border-2 overflow-hidden transition-all duration-200 text-center ${
+                className={`relative rounded-xl border-2 overflow-visible transition-all duration-200 text-center ${
                   selected
                     ? "border-promo shadow-lg ring-2 ring-promo/30"
                     : "border-border bg-card hover:border-primary/40"
                 }`}
               >
-                <div className="relative">
+                <div className="relative overflow-visible">
                   <img src={opt.bg_img || cardImg} alt="" className="w-full aspect-square object-cover" />
-                  <div className="absolute top-1 right-1 bg-promo text-promo-foreground text-[9px] font-bold px-1 py-0.5 rounded-md">
+                  <div className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-promo text-promo-foreground text-[8px] font-bold flex items-center justify-center">
                     -{opt.discount}%
                   </div>
                   <div className="absolute bottom-1 right-1 bg-white/90 text-foreground text-[8px] font-semibold px-1.5 py-0.5 rounded-md">
@@ -86,11 +86,11 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
                   </div>
                 </div>
                 <div className="p-1.5">
-                  <div className="flex flex-col items-center">
-                    <span className="text-[10px] text-muted-foreground line-through">
+                  <div className="flex flex-col items-center gap-0 leading-none">
+                    <span className="text-[10px] text-muted-foreground line-through leading-none">
                       {formatPrice(opt.price)}
                     </span>
-                    <span className="text-sm font-bold text-foreground">
+                    <span className="text-[15px] font-bold text-foreground leading-none mt-0.5">
                       {formatPrice(opt.promo_price)}
                     </span>
                   </div>
