@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useBuilder } from "@/context/BuilderContext";
 import { Upload, X } from "lucide-react";
 import WhatsAppHelpModal from "./WhatsAppHelpModal";
@@ -17,28 +17,20 @@ interface StepUploadProps {
 }
 
 const StepUpload = ({ onError }: StepUploadProps) => {
-  const { state, addFile, removeFile, setProgress } = useBuilder();
+  const { state, addFile, removeFile, notifyUploadStep } = useBuilder();
   const fileInputRefs = useRef<(HTMLInputElement | null)[]>([null, null, null]);
   const [helpModalOpen, setHelpModalOpen] = useState(false);
 
-  const simulateUpload = (index: number) => {
-    let progress = 0;
-    const interval = setInterval(() => {
-      progress += Math.random() * 25 + 10;
-      if (progress >= 100) {
-        progress = 100;
-        clearInterval(interval);
-      }
-      setProgress(index, Math.min(progress, 100));
-    }, 200);
-  };
+  // Notify backend once when the upload step becomes visible
+  useEffect(() => {
+    notifyUploadStep();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleFileSelect = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     addFile(index, file);
     onError(null);
-    simulateUpload(index);
   };
 
   const visibleCount = (() => {
