@@ -20,9 +20,9 @@ const BottomBar = ({ onAdvance, buttonLabel = "Avançar" }: BottomBarProps) => {
           Antes: <span className="line-through">{formatPrice(oldPrice)}</span>
         </span>
         <span className="text-lg font-bold text-foreground leading-tight">
-          {formatPrice(newPrice)}
+          {formatPrice(newPrice)}*
         </span>
-        <span className="text-[10px] text-promo font-medium leading-tight">c/Portes Grátis</span>
+        <span className="text-[10px] text-promo font-medium leading-tight">c/Portes Grátis*</span>
       </div>
       <button
         onClick={onAdvance}

@@ -7,7 +7,7 @@ const ACCEPTED_TYPES = ".jpg,.jpeg,.png,.webp,.heic";
 const ACCEPTED_LABEL = "Ficheiros aceites: JPG, JPEG, PNG, WEBP e HEIC. Tamanho maximo: 30MB.";
 
 const SLOT_LABELS = [
-  "Adiciona aqui a tua Foto Favorita",
+  "Clica aqui para Adicionar",
   "Queres adicionar mais uma?",
   "Queres adicionar mais uma?",
 ];
@@ -51,8 +51,8 @@ const StepUpload = ({ onError }: StepUploadProps) => {
 
   return (
     <div>
-      <h2 className="text-lg font-bold text-foreground mb-1">Envia as fotografias</h2>
-      <p className="text-xs text-muted-foreground mb-4">Ate 3 fotos. Quanto melhor, melhor o resultado.</p>
+      <h2 className="text-lg font-bold text-foreground mb-1">Submete a tua Foto Favorita</h2>
+      <p className="text-xs text-muted-foreground mb-4">Para que possamos transformar cada detalhe numa Obra Única...</p>
 
       <div className="flex flex-col gap-3">
         {Array.from({ length: visibleCount }).map((_, index) => {
@@ -124,10 +124,10 @@ const StepUpload = ({ onError }: StepUploadProps) => {
         onClick={() => setHelpModalOpen(true)}
         className="text-xs font-semibold text-foreground underline mt-3 cursor-pointer text-center"
       >
-        Não estou a conseguir subir a minha Foto.
+        Não estou a conseguir Subir a Foto
       </p>
 
-      <p className="text-[10px] text-muted-foreground mt-2 text-center">{ACCEPTED_LABEL}</p>
+      <p className="text-[10px] text-muted-foreground mt-2 text-center">Poderás adicionar até 3 Fotos nos formatos: JPG, JPEG, PNG, WEBP e HEIC. Tamanho maximo: 30MB.</p>
 
       <WhatsAppHelpModal isOpen={helpModalOpen} onClose={() => setHelpModalOpen(false)} />
     </div>
