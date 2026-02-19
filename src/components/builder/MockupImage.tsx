@@ -31,9 +31,9 @@ const MockupImage = () => {
         className="w-full h-auto block transition-opacity duration-200"
         style={{ opacity: fading ? 0.4 : 1 }}
       />
-      <div className="absolute bottom-[5px] right-[5px] bg-white/95 backdrop-blur-sm rounded-md px-2 py-1 flex items-center gap-1 shadow-sm">
-        <AlertTriangle className="w-3 h-3 text-warning-foreground" />
-        <span className="text-[9px] font-medium text-warning-foreground">Esta imagem é apenas ilustrativa</span>
+      <div className="absolute bottom-[5px] right-[5px] bg-white/90 backdrop-blur-sm rounded-md px-1.5 py-0.5 flex items-center gap-1">
+        <AlertTriangle className="w-3 h-3 text-foreground" />
+        <span className="text-[8px] font-semibold text-foreground">Esta imagem é apenas ilustrativa</span>
       </div>
     </div>
   );

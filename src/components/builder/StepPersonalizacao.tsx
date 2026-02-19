@@ -28,7 +28,7 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
                 <button
                   key={c.id}
                   onClick={() => { setFrame(c.prefix); onError(null); }}
-                  className={`h-9 rounded-lg border-2 transition-all duration-200 ${
+                  className={`h-[32px] md:h-9 rounded-lg border-2 transition-all duration-200 ${
                     selected ? "border-promo ring-2 ring-promo/30 scale-105" : "border-border hover:border-primary/40"
                   }`}
                   style={{ backgroundColor: c.hex }}
@@ -48,7 +48,7 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
                 <button
                   key={c.name}
                   onClick={() => { setFundo(c.name); onError(null); }}
-                  className={`h-9 rounded-lg border-2 transition-all duration-200 ${
+                  className={`h-[32px] md:h-9 rounded-lg border-2 transition-all duration-200 ${
                     selected ? "border-promo ring-2 ring-promo/30 scale-105" : "border-border hover:border-primary/40"
                   }`}
                   style={{ backgroundColor: c.hex }}
