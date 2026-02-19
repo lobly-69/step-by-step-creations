@@ -14,13 +14,23 @@ const countryCodes = [
   { id: "outro", label: "Outro", code: "" },
 ];
 
+const nameRegex = /^[^\d]*$/; // no digits allowed
+
+
+
 const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
-  const [name, setName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [firstNameTouched, setFirstNameTouched] = useState(false);
+  const [lastNameTouched, setLastNameTouched] = useState(false);
   const [country, setCountry] = useState("pt");
   const [phone, setPhone] = useState("");
   const [customCode, setCustomCode] = useState("");
   const [showEmail, setShowEmail] = useState(false);
   const [email, setEmail] = useState("");
+
+  const firstNameError = firstNameTouched && (firstName.trim().replace(/\s{2,}/g, " ").length < 2 || !nameRegex.test(firstName.trim()));
+  const lastNameError = lastNameTouched && (lastName.trim().replace(/\s{2,}/g, " ").length < 2 || !nameRegex.test(lastName.trim()));
 
   if (!isOpen) return null;
 
@@ -48,16 +58,42 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
           </p>
 
           <div className="flex flex-col gap-3">
-            {/* Nome */}
-            <div>
-              <label className="text-xs font-medium text-foreground mb-1 block">Nome *</label>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="ex: João Silva"
-                className="w-full rounded-lg border border-input bg-card px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-              />
+            {/* Primeiro Nome + Último Nome */}
+            <div className="flex gap-2">
+              {/* Primeiro Nome */}
+              <div className="flex-1">
+                <label className="text-xs font-medium text-foreground mb-1 block">Primeiro Nome *</label>
+                <input
+                  type="text"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  onBlur={() => setFirstNameTouched(true)}
+                  placeholder="Ex: João"
+                  className={`w-full rounded-lg border bg-card px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-colors ${
+                    firstNameError ? "border-destructive focus:ring-destructive/40" : "border-input"
+                  }`}
+                />
+                {firstNameError && (
+                  <p className="text-[10px] text-destructive mt-0.5">Insere o teu primeiro nome.</p>
+                )}
+              </div>
+              {/* Último Nome */}
+              <div className="flex-1">
+                <label className="text-xs font-medium text-foreground mb-1 block">Último Nome *</label>
+                <input
+                  type="text"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  onBlur={() => setLastNameTouched(true)}
+                  placeholder="Ex: Silva"
+                  className={`w-full rounded-lg border bg-card px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-colors ${
+                    lastNameError ? "border-destructive focus:ring-destructive/40" : "border-input"
+                  }`}
+                />
+                {lastNameError && (
+                  <p className="text-[10px] text-destructive mt-0.5">Insere o teu último nome.</p>
+                )}
+              </div>
             </div>
 
             {/* WhatsApp — hidden when email mode */}
