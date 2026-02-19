@@ -20,7 +20,7 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
       <div className="flex gap-[24px] mb-3 items-start">
         {/* Frame colors */}
         <div className="flex-[2]">
-          <p className="text-[11px] font-semibold text-foreground mb-1">Moldura:</p>
+          <p className="text-xs font-semibold text-foreground mb-1">Moldura:</p>
           <div className="grid grid-cols-2 gap-1.5">
             {config.frameColors.map((c) => {
               const selected = state.cores.frame === c.prefix;
@@ -40,7 +40,7 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
 
         {/* Background colors */}
         <div className="flex-[5]">
-          <p className="text-[11px] font-semibold text-foreground mb-1">Cor de Fundo:</p>
+          <p className="text-xs font-semibold text-foreground mb-1">Cor de Fundo:</p>
           <div className="grid grid-cols-5 gap-1.5">
             {config.backgroundColors.map((c) => {
               const selected = state.cores.fundo === c.name;
