@@ -13,16 +13,12 @@ const WhatsAppHelpModal = ({ isOpen, onClose }: WhatsAppHelpModalProps) => {
 
   const hasSelection = state.tamanho !== null && state.cores.frame !== null;
 
-  // Build frame label (feminino: Moldura Branca/Preta)
+  // Build frame label using display_name_pt (fallback to name)
   const frameLabel = (() => {
     if (!state.cores.frame) return "";
     const frame = config.frameColors.find((f) => f.prefix === state.cores.frame);
     if (!frame) return "";
-    // Convert to feminine: Preto→Preta, Branco→Branca
-    const name = frame.name;
-    if (name.toLowerCase() === "preto") return "Preta";
-    if (name.toLowerCase() === "branco") return "Branca";
-    return name;
+    return frame.display_name_pt || frame.name;
   })();
 
   const sizeLabel = state.tamanho ? `${state.tamanho}cm` : "";

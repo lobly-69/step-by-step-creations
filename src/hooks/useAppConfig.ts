@@ -20,8 +20,8 @@ const fallbackBackgroundColors: DbBackgroundColor[] = [
 ];
 
 const fallbackFrameColors: DbFrameColor[] = [
-  { id: 1, name: "Preto", prefix: "preto", hex: "#1a1a1a", display_order: 1 },
-  { id: 2, name: "Branco", prefix: "branco", hex: "#ffffff", display_order: 2 },
+  { id: 1, name: "Preto", prefix: "preto", hex: "#1a1a1a", display_order: 1, display_name_pt: "Preta" },
+  { id: 2, name: "Branco", prefix: "branco", hex: "#ffffff", display_order: 2, display_name_pt: "Branca" },
 ];
 
 const FALLBACK_WHATSAPP = "+351913954511";
@@ -50,7 +50,7 @@ export function useAppConfig() {
         const [sizesRes, bgRes, frameRes, mockupRes, settingsRes] = await Promise.all([
           supabase.from("sizes").select("size, label, name, price, promo_price, discount, bg_img, display_order").eq("active", true).order("display_order", { ascending: true }),
           supabase.from("background_colors").select("name, hex, display_order").eq("active", true).order("display_order", { ascending: true }),
-          supabase.from("frame_colors").select("id, name, prefix, hex, display_order").eq("active", true).order("display_order", { ascending: true }),
+          supabase.from("frame_colors").select("id, name, prefix, hex, display_order, display_name_pt").eq("active", true).order("display_order", { ascending: true }),
           supabase.from("mockup_variants").select("size, frame_prefix, background_name, image_url").eq("active", true),
           supabase.from("builder_settings").select("value").eq("key", "support_whatsapp").limit(1).maybeSingle(),
         ]);
