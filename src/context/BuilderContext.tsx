@@ -211,8 +211,11 @@ export const BuilderProvider: React.FC<BuilderProviderProps> = ({
   }, [state.tamanho, config.sizes]);
 
   const getMockupUrl = useCallback(() => {
-    if (!state.tamanho || !state.cores.frame || !state.cores.fundo) return null;
-    const selectedSize = config.sizes.find((s) => s.size === state.tamanho);
+    if (!state.cores.frame || !state.cores.fundo) return null;
+    // Use selected size, or fall back to first available size for mockup display only
+    const sizeKey = state.tamanho ?? config.sizes[0]?.size ?? null;
+    if (!sizeKey) return null;
+    const selectedSize = config.sizes.find((s) => s.size === sizeKey);
     if (!selectedSize) return null;
     const variant = config.mockupVariants.find(
       (v) =>
