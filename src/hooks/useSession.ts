@@ -55,7 +55,9 @@ interface UseSessionReturn {
   finalizeSession: (payload: {
     first_name: string;
     last_name: string;
-    whatsapp_full?: string | null;
+    country_code?: string | null;
+    dial_code?: string | null;
+    whatsapp_number?: string | null;
     email?: string | null;
   }) => Promise<{ success: boolean; entry_number?: number }>;
 }
@@ -108,7 +110,9 @@ export function useSession(): UseSessionReturn {
     async (payload: {
       first_name: string;
       last_name: string;
-      whatsapp_full?: string | null;
+      country_code?: string | null;
+      dial_code?: string | null;
+      whatsapp_number?: string | null;
       email?: string | null;
     }) => {
       if (!sessionId) throw new Error("No session");

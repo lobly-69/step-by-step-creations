@@ -9,10 +9,10 @@ interface FinalModalProps {
 }
 
 const countryCodes = [
-  { id: "pt", label: "PT", code: "+351" },
-  { id: "br", label: "BR", code: "+55" },
-  { id: "es", label: "ES", code: "+34" },
-  { id: "outro", label: "Outro", code: "" },
+  { id: "pt", label: "PT", code: "+351", countryCode: "PT" },
+  { id: "br", label: "BR", code: "+55",  countryCode: "BR" },
+  { id: "es", label: "ES", code: "+34",  countryCode: "ES" },
+  { id: "outro", label: "Outro", code: "", countryCode: "" },
 ];
 
 const nameRegex = /^[^\d]*$/; // no digits allowed
@@ -44,12 +44,13 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
     return countryCodes.find((c) => c.id === country)?.code ?? "";
   };
 
-  const buildWhatsappFull = () => {
-    const dial = getDialCode().replace(/\s/g, "");
-    const number = phone.trim().replace(/\s/g, "");
-    if (!number) return null;
-    return `${dial}${number}`;
+  const getCountryCode = () => {
+    if (country === "outro") return null;
+    return countryCodes.find((c) => c.id === country)?.countryCode ?? null;
   };
+
+  // Strip everything except digits
+  const sanitizeNumber = (v: string) => v.replace(/\D/g, "");
 
   const isFormValid = () => {
     const fnOk =
@@ -60,11 +61,10 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
       nameRegex.test(lastName.trim());
     if (!fnOk || !lnOk) return false;
     if (showEmail) return email.trim().length > 3;
-    return phone.trim().length > 0;
+    return sanitizeNumber(phone).length > 0;
   };
 
   const handleSubmit = async () => {
-    // Touch all fields to show errors
     setFirstNameTouched(true);
     setLastNameTouched(true);
 
@@ -74,13 +74,17 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
     setSubmitError(null);
 
     try {
-      const whatsapp_full = showEmail ? null : buildWhatsappFull();
       const emailVal = showEmail ? email.trim() : null;
+      const dialCode = showEmail ? null : getDialCode();
+      const countryCode = showEmail ? null : getCountryCode();
+      const whatsappNumber = showEmail ? null : sanitizeNumber(phone);
 
       const result = await finalizeSession({
         first_name: firstName.trim().replace(/\s{2,}/g, " "),
         last_name: lastName.trim().replace(/\s{2,}/g, " "),
-        whatsapp_full,
+        country_code: countryCode,
+        dial_code: dialCode,
+        whatsapp_number: whatsappNumber || null,
         email: emailVal,
       });
 
