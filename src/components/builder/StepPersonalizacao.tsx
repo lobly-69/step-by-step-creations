@@ -28,11 +28,11 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
       <p className="text-xs text-muted-foreground leading-tight mb-2">Escolhe cores e tamanho.</p>
 
       {/* Cores — moldura e fundo na mesma linha */}
-      <div className="flex gap-6 mb-3 items-start">
+      <div className="flex gap-8 mb-3 items-start">
         {/* Cor da Moldura */}
         <div className="flex-shrink-0">
           <p className="text-[10px] font-semibold text-foreground mb-1">Cor da Moldura:</p>
-          <div className="flex gap-1">
+          <div className="flex flex-col md:flex-row gap-1">
             {frameColors.map((c) => {
               const selected = state.cores.frame === c.id;
               return (
@@ -52,7 +52,7 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
         {/* Cor do Fundo */}
         <div className="flex-1 min-w-0">
           <p className="text-[10px] font-semibold text-foreground mb-1">Cor do Fundo:</p>
-          <div className="grid grid-cols-3 gap-1">
+          <div className="grid grid-cols-3 md:grid-cols-6 gap-1">
             {fundoColors.map((c) => {
               const selected = state.cores.fundo === c.id;
               return (

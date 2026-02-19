@@ -101,26 +101,36 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
               </div>
             )}
 
-            {/* Toggle link */}
-            <p
-              onClick={() => setShowEmail(!showEmail)}
-              className="text-xs font-semibold text-foreground underline cursor-pointer text-center"
-            >
-              {showEmail ? "Prefiro por WhatsApp" : "Não tenho WhatsApp"}
-            </p>
+            {/* Toggle to email */}
+            {!showEmail && (
+              <p
+                onClick={() => setShowEmail(true)}
+                className="text-xs font-semibold text-foreground underline cursor-pointer text-center"
+              >
+                Não tenho WhatsApp
+              </p>
+            )}
 
             {/* Email field */}
             {showEmail && (
-              <div>
-                <label className="text-xs font-medium text-foreground mb-1 block">Email *</label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="O teu email"
-                  className="w-full rounded-lg border border-input bg-card px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-                />
-              </div>
+              <>
+                <div>
+                  <label className="text-xs font-medium text-foreground mb-1 block">Email *</label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="O teu email"
+                    className="w-full rounded-lg border border-input bg-card px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                  />
+                </div>
+                <p
+                  onClick={() => setShowEmail(false)}
+                  className="text-xs font-semibold text-foreground underline cursor-pointer text-center"
+                >
+                  Prefiro por WhatsApp
+                </p>
+              </>
             )}
 
             <button className="w-full bg-promo text-promo-foreground font-semibold text-sm py-3 rounded-lg active:scale-[0.98] transition-transform duration-150 mt-1">
@@ -130,7 +140,7 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
               Só pagas depois de aprovares o Desenho Final
             </p>
           </div>
-          <div className="h-[90px]" />
+          <div className="h-[15px]" />
         </div>
       </div>
     </div>
