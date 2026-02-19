@@ -21,6 +21,7 @@ export interface DbFrameColor {
   prefix: string;
   hex: string;
   display_order: number;
+  display_name_pt: string | null;
 }
 
 export interface DbMockupVariant {
