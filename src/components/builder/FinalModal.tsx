@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { X } from "lucide-react";
 import helpdeskImg from "@/assets/helpdesk-pixar.jpg";
+import { useBuilder } from "@/context/BuilderContext";
 
 interface FinalModalProps {
   isOpen: boolean;
@@ -16,9 +17,9 @@ const countryCodes = [
 
 const nameRegex = /^[^\d]*$/; // no digits allowed
 
-
-
 const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
+  const { finalizeSession } = useBuilder();
+
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [firstNameTouched, setFirstNameTouched] = useState(false);
@@ -28,9 +29,73 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
   const [customCode, setCustomCode] = useState("");
   const [showEmail, setShowEmail] = useState(false);
   const [email, setEmail] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const firstNameError = firstNameTouched && (firstName.trim().replace(/\s{2,}/g, " ").length < 2 || !nameRegex.test(firstName.trim()));
-  const lastNameError = lastNameTouched && (lastName.trim().replace(/\s{2,}/g, " ").length < 2 || !nameRegex.test(lastName.trim()));
+  const firstNameError =
+    firstNameTouched &&
+    (firstName.trim().replace(/\s{2,}/g, " ").length < 2 || !nameRegex.test(firstName.trim()));
+  const lastNameError =
+    lastNameTouched &&
+    (lastName.trim().replace(/\s{2,}/g, " ").length < 2 || !nameRegex.test(lastName.trim()));
+
+  const getDialCode = () => {
+    if (country === "outro") return customCode.trim();
+    return countryCodes.find((c) => c.id === country)?.code ?? "";
+  };
+
+  const buildWhatsappFull = () => {
+    const dial = getDialCode().replace(/\s/g, "");
+    const number = phone.trim().replace(/\s/g, "");
+    if (!number) return null;
+    return `${dial}${number}`;
+  };
+
+  const isFormValid = () => {
+    const fnOk =
+      firstName.trim().replace(/\s{2,}/g, " ").length >= 2 &&
+      nameRegex.test(firstName.trim());
+    const lnOk =
+      lastName.trim().replace(/\s{2,}/g, " ").length >= 2 &&
+      nameRegex.test(lastName.trim());
+    if (!fnOk || !lnOk) return false;
+    if (showEmail) return email.trim().length > 3;
+    return phone.trim().length > 0;
+  };
+
+  const handleSubmit = async () => {
+    // Touch all fields to show errors
+    setFirstNameTouched(true);
+    setLastNameTouched(true);
+
+    if (!isFormValid()) return;
+
+    setSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      const whatsapp_full = showEmail ? null : buildWhatsappFull();
+      const emailVal = showEmail ? email.trim() : null;
+
+      const result = await finalizeSession({
+        first_name: firstName.trim().replace(/\s{2,}/g, " "),
+        last_name: lastName.trim().replace(/\s{2,}/g, " "),
+        whatsapp_full,
+        email: emailVal,
+      });
+
+      if (result.success) {
+        window.location.href = "https://lobly.pt/sucesso/";
+      } else {
+        setSubmitError("Ocorreu um erro. Tenta novamente.");
+      }
+    } catch (err: any) {
+      console.error("finalizeSession error:", err);
+      setSubmitError("Ocorreu um erro. Tenta novamente.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -170,8 +235,16 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
               </>
             )}
 
-            <button className="w-full bg-promo text-promo-foreground font-semibold text-sm py-3 rounded-lg active:scale-[0.98] transition-transform duration-150 mt-1">
-              Finalizar pedido
+            {submitError && (
+              <p className="text-xs text-destructive text-center">{submitError}</p>
+            )}
+
+            <button
+              onClick={handleSubmit}
+              disabled={submitting}
+              className="w-full bg-promo text-promo-foreground font-semibold text-sm py-3 rounded-lg active:scale-[0.98] transition-transform duration-150 mt-1 disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {submitting ? "A enviar..." : "Finalizar pedido"}
             </button>
             <p className="text-[8px] md:text-[10px] text-muted-foreground text-center mt-0 leading-[1.2]">
               Apenas usamos o teu contacto para enviar a tua Ilustração Personalizada. Nada de Spam nem Publicidade
