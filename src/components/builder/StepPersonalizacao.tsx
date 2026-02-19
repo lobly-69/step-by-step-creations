@@ -27,19 +27,19 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
       <h2 className="text-base font-bold text-foreground leading-tight mb-0">Personaliza o teu quadro</h2>
       <p className="text-xs text-muted-foreground leading-tight mb-2">Escolhe cores e tamanho.</p>
 
-      {/* Cores — moldura e fundo na mesma linha */}
-      <div className="flex gap-8 mb-3 items-start">
+      {/* Cores */}
+      <div className="flex flex-col gap-3 mb-3">
         {/* Cor da Moldura */}
-        <div className="flex-shrink-0">
+        <div>
           <p className="text-[10px] font-semibold text-foreground mb-1">Cor da Moldura:</p>
-          <div className="flex flex-col md:flex-row gap-1">
+          <div className="grid grid-cols-2 md:grid-cols-6 gap-1">
             {frameColors.map((c) => {
               const selected = state.cores.frame === c.id;
               return (
                 <button
                   key={c.id}
                   onClick={() => { setFrame(c.id); onError(null); }}
-                  className={`w-10 h-7 rounded-md border-2 transition-all duration-200 ${
+                  className={`h-7 rounded-md border-2 transition-all duration-200 ${
                     selected ? "border-promo ring-2 ring-promo/30 scale-105" : "border-border hover:border-primary/40"
                   }`}
                   style={{ backgroundColor: c.hex }}
@@ -50,7 +50,7 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
         </div>
 
         {/* Cor do Fundo */}
-        <div className="flex-1 min-w-0">
+        <div>
           <p className="text-[10px] font-semibold text-foreground mb-1">Cor do Fundo:</p>
           <div className="grid grid-cols-3 md:grid-cols-6 gap-1">
             {fundoColors.map((c) => {
