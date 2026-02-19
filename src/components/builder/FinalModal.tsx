@@ -42,9 +42,9 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
         <img src={helpdeskImg} alt="" className="w-full h-auto object-contain" />
 
         <div className="p-5">
-          <h2 className="text-lg font-bold text-foreground mb-0.5">Estamos quase lá...</h2>
-          <p className="text-xs text-muted-foreground mb-4">
-            Deixa-nos o teu WhatsApp para te enviarmos o Desenho assim que estiver pronto. E não te preocupes pois não tens que pagar nada agora e só avançamos se Gostares do Resultado Final.
+          <h2 className="text-lg font-bold text-foreground text-center mb-0.5">Estamos quase lá...</h2>
+          <p className="text-xs text-muted-foreground text-center mb-4">
+            Deixa-nos o teu WhatsApp para te enviarmos o Desenho assim que estiver pronto. Não tens que pagar nada agora e só avançamos se Gostares...
           </p>
 
           <div className="flex flex-col gap-3">
@@ -137,11 +137,11 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
             <button className="w-full bg-promo text-promo-foreground font-semibold text-sm py-3 rounded-lg active:scale-[0.98] transition-transform duration-150 mt-1">
               Finalizar pedido
             </button>
-            <p className="text-[10px] text-muted-foreground text-center mt-2">
+            <p className="text-[8px] md:text-[10px] text-muted-foreground text-center mt-0 leading-[1.2]">
               Apenas usamos o teu contacto para enviar a tua Ilustração Personalizada. Nada de Spam nem Publicidade
             </p>
           </div>
-          <div className="h-[15px]" />
+          <div className="h-0" />
         </div>
       </div>
     </div>

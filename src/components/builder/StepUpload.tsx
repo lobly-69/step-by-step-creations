@@ -51,8 +51,8 @@ const StepUpload = ({ onError }: StepUploadProps) => {
 
   return (
     <div>
-      <h2 className="text-lg font-bold text-foreground mb-1">Submete a tua Foto Favorita</h2>
-      <p className="text-xs text-muted-foreground mb-4">Para que possamos transformar cada detalhe numa Obra Única...</p>
+      <h2 className="text-lg font-bold text-foreground text-center mb-1">Submete a tua Foto Favorita</h2>
+      <p className="text-xs text-muted-foreground text-center mb-4">Para que possamos transformar cada detalhe numa Obra Única...</p>
 
       <div className="flex flex-col gap-3">
         {Array.from({ length: visibleCount }).map((_, index) => {
