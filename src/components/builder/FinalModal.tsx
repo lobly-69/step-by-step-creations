@@ -179,7 +179,7 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
                   onChange={(e) => setFirstName(e.target.value)}
                   onBlur={() => setFirstNameTouched(true)}
                   placeholder="Ex: João"
-                  className={`w-full rounded-lg border bg-card px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-colors ${
+                  className={`w-full rounded-lg border bg-card px-3 py-2.5 text-sm text-foreground placeholder:text-[#eeeeee]/60 focus:outline-none focus:ring-2 focus:ring-ring transition-colors ${
                     firstNameError ? "border-destructive focus:ring-destructive/40" : "border-input"
                   }`}
                 />
@@ -196,7 +196,7 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
                   onChange={(e) => setLastName(e.target.value)}
                   onBlur={() => setLastNameTouched(true)}
                   placeholder="Ex: Silva"
-                  className={`w-full rounded-lg border bg-card px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-colors ${
+                  className={`w-full rounded-lg border bg-card px-3 py-2.5 text-sm text-foreground placeholder:text-[#eeeeee]/60 focus:outline-none focus:ring-2 focus:ring-ring transition-colors ${
                     lastNameError ? "border-destructive focus:ring-destructive/40" : "border-input"
                   }`}
                 />
@@ -233,7 +233,7 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
                       value={customCode}
                       onChange={(e) => setCustomCode(e.target.value)}
                       placeholder="+..."
-                      className="w-16 rounded-lg border border-input bg-card px-2 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring flex-shrink-0"
+                      className="w-16 rounded-lg border border-input bg-card px-2 py-2.5 text-sm text-foreground placeholder:text-[#eeeeee]/60 focus:outline-none focus:ring-2 focus:ring-ring flex-shrink-0"
                     />
                   )}
                   <input
@@ -243,7 +243,7 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
                     onBlur={() => setPhoneTouched(true)}
                     placeholder="ex: 926948901"
                     inputMode="numeric"
-                    className={`flex-1 min-w-0 rounded-lg border bg-card px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-colors ${
+                    className={`flex-1 min-w-0 rounded-lg border bg-card px-3 py-2.5 text-sm text-foreground placeholder:text-[#eeeeee]/60 focus:outline-none focus:ring-2 focus:ring-ring transition-colors ${
                       phoneError ? "border-destructive focus:ring-destructive/40" : "border-input"
                     }`}
                   />
@@ -275,7 +275,7 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
                     onChange={(e) => { setEmail(e.target.value); setEmailBackendError(null); }}
                     onBlur={() => setEmailTouched(true)}
                     placeholder="O teu email"
-                    className={`w-full rounded-lg border bg-card px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-colors ${
+                    className={`w-full rounded-lg border bg-card px-3 py-2.5 text-sm text-foreground placeholder:text-[#eeeeee]/60 focus:outline-none focus:ring-2 focus:ring-ring transition-colors ${
                       emailError ? "border-destructive focus:ring-destructive/40" : "border-input"
                     }`}
                   />
