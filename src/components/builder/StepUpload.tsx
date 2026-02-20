@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import { useBuilder } from "@/context/BuilderContext";
+import { supabase } from "@/integrations/supabase/client";
 import { Upload, X } from "lucide-react";
 import WhatsAppHelpModal from "./WhatsAppHelpModal";
 
@@ -38,40 +39,30 @@ const StepUpload = ({ onError }: StepUploadProps) => {
       const urls = await getUploadUrls([{ ext: getExt(file) }]);
       const entry = urls[0];
 
-      if (!entry?.signed_url) {
-        // Fallback: simulate upload if no URL returned
+      if (!entry?.signed_url || !entry?.path) {
         simulateUpload(index);
         return;
       }
 
-      // Real PUT upload
-      const xhr = new XMLHttpRequest();
-      xhr.open("PUT", entry.signed_url, true);
-      xhr.setRequestHeader("Content-Type", file.type || "application/octet-stream");
+      // Extract the token from the signed URL query string
+      const urlObj = new URL(entry.signed_url);
+      const token = urlObj.searchParams.get("token") ?? "";
 
-      xhr.upload.onprogress = (e) => {
-        if (e.lengthComputable) {
-          setProgress(index, Math.round((e.loaded / e.total) * 100));
-        }
-      };
+      // Use Supabase Storage SDK — uploadToSignedUrl
+      const { error } = await supabase.storage
+        .from("builder")
+        .uploadToSignedUrl(entry.path, token, file, {
+          contentType: file.type || "application/octet-stream",
+          upsert: true,
+        });
 
-      xhr.onload = () => {
-        if (xhr.status >= 200 && xhr.status < 300) {
-          setProgress(index, 100);
-        } else {
-          console.warn("Upload failed, status", xhr.status);
-          setProgress(index, 100); // mark complete anyway to not block UX
-        }
-      };
+      if (error) {
+        console.warn("uploadToSignedUrl failed:", error.message);
+      }
 
-      xhr.onerror = () => {
-        console.warn("Upload XHR error");
-        setProgress(index, 100);
-      };
-
-      xhr.send(file);
+      setProgress(index, 100);
     } catch (err) {
-      console.warn("getUploadUrls failed, falling back to simulate:", err);
+      console.warn("doUpload failed, falling back to simulate:", err);
       simulateUpload(index);
     }
   };
