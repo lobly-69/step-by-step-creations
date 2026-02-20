@@ -144,6 +144,36 @@ export type Database = {
           },
         ]
       }
+      builder_lead_links: {
+        Row: {
+          created_at: string
+          entry_number: number
+          file1_url: string | null
+          file2_url: string | null
+          file3_url: string | null
+          links_expires_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          entry_number: number
+          file1_url?: string | null
+          file2_url?: string | null
+          file3_url?: string | null
+          links_expires_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          entry_number?: number
+          file1_url?: string | null
+          file2_url?: string | null
+          file3_url?: string | null
+          links_expires_at?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       builder_sessions: {
         Row: {
           abandoned_at: string | null
@@ -156,6 +186,7 @@ export type Database = {
           entry_number: number | null
           first_name: string | null
           frame_prefix: string | null
+          full_name: string | null
           image_count: number
           last_name: string | null
           lifecycle_status: string
@@ -179,6 +210,7 @@ export type Database = {
           entry_number?: number | null
           first_name?: string | null
           frame_prefix?: string | null
+          full_name?: string | null
           image_count?: number
           last_name?: string | null
           lifecycle_status?: string
@@ -202,6 +234,7 @@ export type Database = {
           entry_number?: number | null
           first_name?: string | null
           frame_prefix?: string | null
+          full_name?: string | null
           image_count?: number
           last_name?: string | null
           lifecycle_status?: string
@@ -404,15 +437,26 @@ export type Database = {
         Row: {
           abandoned_at: string | null
           background_name: string | null
+          cor_da_moldura: string | null
           country_code: string | null
           created_at: string | null
           current_step: string | null
           dial_code: string | null
           email: string | null
           entry_number: number | null
+          file1_path: string | null
+          file1_url: string | null
+          file2_path: string | null
+          file2_url: string | null
+          file3_path: string | null
+          file3_url: string | null
+          first_name: string | null
           frame_prefix: string | null
+          full_name: string | null
           image_count: number | null
+          last_name: string | null
           lifecycle_status: string | null
+          links_expires_at: string | null
           name: string | null
           origin_url: string | null
           result_code: string | null
@@ -421,48 +465,6 @@ export type Database = {
           updated_at: string | null
           whatsapp_full: string | null
           whatsapp_number: string | null
-        }
-        Insert: {
-          abandoned_at?: string | null
-          background_name?: string | null
-          country_code?: string | null
-          created_at?: string | null
-          current_step?: string | null
-          dial_code?: string | null
-          email?: string | null
-          entry_number?: number | null
-          frame_prefix?: string | null
-          image_count?: number | null
-          lifecycle_status?: string | null
-          name?: string | null
-          origin_url?: string | null
-          result_code?: string | null
-          session_id?: string | null
-          size?: string | null
-          updated_at?: string | null
-          whatsapp_full?: string | null
-          whatsapp_number?: string | null
-        }
-        Update: {
-          abandoned_at?: string | null
-          background_name?: string | null
-          country_code?: string | null
-          created_at?: string | null
-          current_step?: string | null
-          dial_code?: string | null
-          email?: string | null
-          entry_number?: number | null
-          frame_prefix?: string | null
-          image_count?: number | null
-          lifecycle_status?: string | null
-          name?: string | null
-          origin_url?: string | null
-          result_code?: string | null
-          session_id?: string | null
-          size?: string | null
-          updated_at?: string | null
-          whatsapp_full?: string | null
-          whatsapp_number?: string | null
         }
         Relationships: [
           {

@@ -78,10 +78,12 @@ const StepUpload = ({ onError }: StepUploadProps) => {
   const handleFileSelect = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    addFile(index, file);
     onError(null);
+    addFile(index, file);
     doUpload(index, file);
   };
+
+  const uploadedCount = state.upload.files.filter(Boolean).length;
 
   const visibleCount = (() => {
     let count = 1;
@@ -162,12 +164,14 @@ const StepUpload = ({ onError }: StepUploadProps) => {
         })}
       </div>
 
-      <p
-        onClick={() => setHelpModalOpen(true)}
-        className="text-xs font-semibold text-foreground underline mt-3 cursor-pointer text-center"
-      >
-        Não estou a conseguir Subir a Foto
-      </p>
+      {uploadedCount === 0 && (
+        <p
+          onClick={() => setHelpModalOpen(true)}
+          className="text-xs font-semibold text-foreground underline mt-3 cursor-pointer text-center"
+        >
+          Não estou a conseguir Subir a Foto
+        </p>
+      )}
 
       <p className="text-[10px] text-muted-foreground mt-2 text-center">Poderás adicionar até 3 Fotos nos formatos: JPG, JPEG, PNG, WEBP e HEIC. Tamanho maximo: 30MB.</p>
 
