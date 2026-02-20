@@ -43,8 +43,8 @@ async function resolveSessionId(): Promise<string | null> {
 
 export interface UploadUrlEntry {
   idx: number;
-  signed_url: string;
   path: string;
+  token: string;
 }
 
 interface UseSessionReturn {
@@ -97,11 +97,11 @@ export function useSession(): UseSessionReturn {
   const getUploadUrls = useCallback(
     async (files: { ext: string }[]): Promise<UploadUrlEntry[]> => {
       if (!sessionId) return [];
-      const data = await callEdge<{ urls: UploadUrlEntry[] }>("create_upload_urls", {
+      const data = await callEdge<{ uploads: UploadUrlEntry[] }>("create_upload_urls", {
         session_id: sessionId,
         files,
       });
-      return data.urls ?? [];
+      return data.uploads ?? [];
     },
     [sessionId]
   );

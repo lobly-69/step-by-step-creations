@@ -35,23 +35,19 @@ const StepUpload = ({ onError }: StepUploadProps) => {
 
   const doUpload = async (index: number, file: File) => {
     try {
-      // Request a signed upload URL for this single file
-      const urls = await getUploadUrls([{ ext: getExt(file) }]);
-      const entry = urls[0];
+      // Request a signed upload token for this single file
+      const uploads = await getUploadUrls([{ ext: getExt(file) }]);
+      const entry = uploads[0];
 
-      if (!entry?.signed_url || !entry?.path) {
+      if (!entry?.path || !entry?.token) {
         simulateUpload(index);
         return;
       }
 
-      // Extract the token from the signed URL query string
-      const urlObj = new URL(entry.signed_url);
-      const token = urlObj.searchParams.get("token") ?? "";
-
-      // Use Supabase Storage SDK — uploadToSignedUrl
+      // Use Supabase Storage SDK with the token directly
       const { error } = await supabase.storage
         .from("builder")
-        .uploadToSignedUrl(entry.path, token, file, {
+        .uploadToSignedUrl(entry.path, entry.token, file, {
           contentType: file.type || "application/octet-stream",
           upsert: true,
         });
