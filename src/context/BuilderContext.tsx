@@ -42,6 +42,7 @@ interface BuilderContextType {
     dial_code?: string | null;
     whatsapp_number?: string | null;
     email?: string | null;
+    honeypot?: string;
   }) => Promise<{ success: boolean; entry_number?: number; error_code?: string; error?: string }>;
 }
 
