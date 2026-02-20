@@ -59,7 +59,7 @@ interface UseSessionReturn {
     dial_code?: string | null;
     whatsapp_number?: string | null;
     email?: string | null;
-  }) => Promise<{ success: boolean; entry_number?: number }>;
+  }) => Promise<{ success: boolean; entry_number?: number; error_code?: string; error?: string }>;
 }
 
 export function useSession(): UseSessionReturn {
@@ -114,17 +114,35 @@ export function useSession(): UseSessionReturn {
       dial_code?: string | null;
       whatsapp_number?: string | null;
       email?: string | null;
-    }) => {
+    }): Promise<{ success: boolean; entry_number?: number; error_code?: string; error?: string }> => {
       if (!sessionId) throw new Error("No session");
-      const result = await callEdge<{ success: boolean; entry_number?: number }>(
-        "finalize_session",
-        { session_id: sessionId, ...payload }
-      );
-      // Clear session from localStorage on success
-      if (result.success) {
+
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+      const res = await fetch(`${supabaseUrl}/functions/v1/finalize_session`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          apikey: anonKey,
+          Authorization: `Bearer ${anonKey}`,
+        },
+        body: JSON.stringify({ session_id: sessionId, ...payload }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (res.ok) {
         localStorage.removeItem(SESSION_KEY);
+        return { success: true, entry_number: data.entry_number };
       }
-      return result;
+
+      // Return error details without throwing — let the caller handle them
+      return {
+        success: false,
+        error_code: data.error_code ?? undefined,
+        error: data.error ?? undefined,
+      };
     },
     [sessionId]
   );
