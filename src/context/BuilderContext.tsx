@@ -34,7 +34,7 @@ interface BuilderContextType {
   canAccessStep: (stepIndex: number) => boolean;
   getCurrentPrice: () => { oldPrice: number; newPrice: number };
   getMockupUrl: () => string | null;
-  getUploadUrls: (files: { ext: string }[]) => Promise<UploadUrlEntry[]>;
+  getUploadUrls: (files: { ext: string; size?: number }[]) => Promise<UploadUrlEntry[]>;
   finalizeSession: (payload: {
     first_name: string;
     last_name: string;
