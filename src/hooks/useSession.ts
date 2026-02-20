@@ -98,7 +98,7 @@ export function useSession(): UseSessionReturn {
   );
 
   const getUploadUrls = useCallback(
-    async (files: { ext: string }[]): Promise<UploadUrlEntry[]> => {
+    async (files: { ext: string; size?: number }[]): Promise<UploadUrlEntry[]> => {
       if (!sessionId) return [];
       const data = await callEdge<{ uploads: UploadUrlEntry[] }>("create_upload_urls", {
         session_id: sessionId,

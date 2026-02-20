@@ -36,7 +36,7 @@ const StepUpload = ({ onError }: StepUploadProps) => {
   const doUpload = async (index: number, file: File) => {
     try {
       // Request a signed upload token for this single file
-      const uploads = await getUploadUrls([{ ext: getExt(file) }]);
+      const uploads = await getUploadUrls([{ ext: getExt(file), size: file.size }]);
       const entry = uploads[0];
 
       if (!entry?.path || !entry?.token) {
