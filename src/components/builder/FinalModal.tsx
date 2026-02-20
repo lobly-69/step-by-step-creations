@@ -10,8 +10,8 @@ interface FinalModalProps {
 
 const countryCodes = [
   { id: "pt", label: "PT", code: "+351", countryCode: "PT" },
-  { id: "br", label: "BR", code: "+55",  countryCode: "BR" },
-  { id: "es", label: "ES", code: "+34",  countryCode: "ES" },
+  { id: "br", label: "BR", code: "+55", countryCode: "BR" },
+  { id: "es", label: "ES", code: "+34", countryCode: "ES" },
   { id: "outro", label: "Outro", code: "", countryCode: "" },
 ];
 
@@ -36,11 +36,13 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
   const [phoneBackendError, setPhoneBackendError] = useState<string | null>(null);
   const [emailBackendError, setEmailBackendError] = useState<string | null>(null);
 
+  // ✅ Honeypot (invisível para humanos)
+  const [hpCompany, setHpCompany] = useState("");
+
   // Strip everything except digits
   const sanitizeNumber = (v: string) => v.replace(/\D/g, "");
 
-  const isValidName = (v: string) =>
-    v.trim().replace(/\s{2,}/g, " ").length >= 2 && nameRegex.test(v.trim());
+  const isValidName = (v: string) => v.trim().replace(/\s{2,}/g, " ").length >= 2 && nameRegex.test(v.trim());
 
   const isValidPhone = (v: string) => sanitizeNumber(v).length > 0;
 
@@ -110,6 +112,9 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
         dial_code: dialCode,
         whatsapp_number: whatsappNumber || null,
         email: emailVal,
+
+        // ✅ Honeypot vai no payload (campo invisível)
+        honeypot: hpCompany,
       });
 
       if (result.success) {
@@ -119,6 +124,12 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
 
       const code = result.error_code;
 
+      // Não revelar “honeypot” ao utilizador
+      if (code === "HONEYPOT") {
+        setSubmitError("Ocorreu um erro. Tenta novamente.");
+        return;
+      }
+
       if (code) {
         if (!showEmail && (WHATSAPP_ERROR_CODES.has(code) || code === "MISSING_CONTACT")) {
           setPhoneBackendError("Número de Whatsapp Inválido");
@@ -127,11 +138,9 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
           setEmailBackendError("Email inválido");
           setEmailTouched(true);
         } else {
-          // Known code but unhandled context — show generic
           setSubmitError("Ocorreu um erro. Tenta novamente.");
         }
       } else {
-        // No error_code — truly unexpected
         setSubmitError("Ocorreu um erro. Tenta novamente.");
       }
     } catch (err: unknown) {
@@ -164,13 +173,36 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
         <div className="p-5">
           <h2 className="text-lg font-bold text-foreground text-center mb-0.5">Estamos quase lá...</h2>
           <p className="text-xs text-muted-foreground text-center mb-4">
-            Deixa-nos o teu WhatsApp para te enviarmos o Desenho assim que estiver pronto. Não tens que pagar nada agora e só avançamos se Gostares...
+            Deixa-nos o teu WhatsApp para te enviarmos o Desenho assim que estiver pronto. Não tens que pagar nada agora
+            e só avançamos se Gostares...
           </p>
 
           <div className="flex flex-col gap-3">
+            {/* ✅ Honeypot invisível (bots costumam preencher) */}
+            <div
+              aria-hidden="true"
+              style={{
+                position: "absolute",
+                left: "-10000px",
+                top: "auto",
+                width: "1px",
+                height: "1px",
+                overflow: "hidden",
+              }}
+            >
+              <label>Company</label>
+              <input
+                type="text"
+                name="company"
+                value={hpCompany}
+                onChange={(e) => setHpCompany(e.target.value)}
+                tabIndex={-1}
+                autoComplete="off"
+              />
+            </div>
+
             {/* Primeiro Nome + Último Nome */}
             <div className="flex gap-2">
-              {/* Primeiro Nome */}
               <div className="flex-1">
                 <label className="text-xs font-medium text-foreground mb-1 block">Primeiro Nome *</label>
                 <input
@@ -183,11 +215,9 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
                     firstNameError ? "border-destructive focus:ring-destructive/40" : "border-input"
                   }`}
                 />
-                {firstNameError && (
-                  <p className="text-[10px] text-destructive mt-0.5">Insere o teu primeiro nome.</p>
-                )}
+                {firstNameError && <p className="text-[10px] text-destructive mt-0.5">Insere o teu primeiro nome.</p>}
               </div>
-              {/* Último Nome */}
+
               <div className="flex-1">
                 <label className="text-xs font-medium text-foreground mb-1 block">Último Nome *</label>
                 <input
@@ -200,13 +230,10 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
                     lastNameError ? "border-destructive focus:ring-destructive/40" : "border-input"
                   }`}
                 />
-                {lastNameError && (
-                  <p className="text-[10px] text-destructive mt-0.5">Insere o teu último nome.</p>
-                )}
+                {lastNameError && <p className="text-[10px] text-destructive mt-0.5">Insere o teu último nome.</p>}
               </div>
             </div>
 
-            {/* WhatsApp — hidden when email mode */}
             {!showEmail && (
               <div>
                 <label className="text-xs font-medium text-foreground mb-1 block">WhatsApp *</label>
@@ -223,10 +250,17 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
                         </option>
                       ))}
                     </select>
-                    <svg className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <svg
+                      className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground pointer-events-none"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
                       <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                     </svg>
                   </div>
+
                   {country === "outro" && (
                     <input
                       type="text"
@@ -236,10 +270,14 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
                       className="w-16 rounded-lg border border-input bg-card px-2 py-2.5 text-sm text-foreground placeholder:text-[#eee] focus:outline-none focus:ring-2 focus:ring-ring flex-shrink-0"
                     />
                   )}
+
                   <input
                     type="tel"
                     value={phone}
-                    onChange={(e) => { setPhone(e.target.value); setPhoneBackendError(null); }}
+                    onChange={(e) => {
+                      setPhone(e.target.value);
+                      setPhoneBackendError(null);
+                    }}
                     onBlur={() => setPhoneTouched(true)}
                     placeholder="ex: 926948901"
                     inputMode="numeric"
@@ -248,23 +286,23 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
                     }`}
                   />
                 </div>
-                {phoneError && (
-                  <p className="text-[10px] text-destructive mt-0.5">{phoneErrorMsg}</p>
-                )}
+
+                {phoneError && <p className="text-[10px] text-destructive mt-0.5">{phoneErrorMsg}</p>}
               </div>
             )}
 
-            {/* Toggle to email */}
             {!showEmail && (
               <p
-                onClick={() => { setShowEmail(true); setPhoneTouched(false); }}
+                onClick={() => {
+                  setShowEmail(true);
+                  setPhoneTouched(false);
+                }}
                 className="text-xs font-semibold text-muted-foreground underline cursor-pointer text-center"
               >
                 Não tenho WhatsApp
               </p>
             )}
 
-            {/* Email field */}
             {showEmail && (
               <>
                 <div>
@@ -272,19 +310,24 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
                   <input
                     type="email"
                     value={email}
-                    onChange={(e) => { setEmail(e.target.value); setEmailBackendError(null); }}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      setEmailBackendError(null);
+                    }}
                     onBlur={() => setEmailTouched(true)}
                     placeholder="O teu email"
                     className={`w-full rounded-lg border bg-card px-3 py-2.5 text-sm text-foreground placeholder:text-[#eee] focus:outline-none focus:ring-2 focus:ring-ring transition-colors ${
                       emailError ? "border-destructive focus:ring-destructive/40" : "border-input"
                     }`}
                   />
-                  {emailError && (
-                    <p className="text-[10px] text-destructive mt-0.5">{emailErrorMsg}</p>
-                  )}
+                  {emailError && <p className="text-[10px] text-destructive mt-0.5">{emailErrorMsg}</p>}
                 </div>
+
                 <p
-                  onClick={() => { setShowEmail(false); setEmailTouched(false); }}
+                  onClick={() => {
+                    setShowEmail(false);
+                    setEmailTouched(false);
+                  }}
                   className="text-xs font-semibold text-muted-foreground underline cursor-pointer text-center"
                 >
                   Prefiro por WhatsApp
@@ -292,9 +335,7 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
               </>
             )}
 
-            {submitError && (
-              <p className="text-xs text-destructive text-center">{submitError}</p>
-            )}
+            {submitError && <p className="text-xs text-destructive text-center">{submitError}</p>}
 
             <button
               onClick={handleSubmit}
@@ -303,10 +344,12 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
             >
               {submitting ? "A enviar..." : "Finalizar pedido"}
             </button>
+
             <p className="text-[8px] md:text-[10px] text-muted-foreground text-center mt-0 leading-[1.2]">
               Apenas usamos o teu contacto para enviar a tua Ilustração Personalizada. Nada de Spam nem Publicidade
             </p>
           </div>
+
           <div className="h-0" />
         </div>
       </div>
