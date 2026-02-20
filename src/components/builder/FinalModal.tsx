@@ -118,8 +118,7 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
       });
 
       if (result.success) {
-        // 🧪 TESTE: redirect desligado temporariamente
-        setSubmitError("SUCESSO (teste) - não houve redirect");
+        window.location.href = "https://lobly.pt/sucesso/";
         return;
       }
 
@@ -179,16 +178,15 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
           </p>
 
           <div className="flex flex-col gap-3">
-            {/* ✅ Honeypot VISÍVEL para teste */}
-            <div>
-              <label className="text-xs font-medium text-foreground mb-1 block">Company (teste)</label>
+            {/* ✅ Honeypot (invisível para humanos) */}
+            <div style={{ position: "absolute", left: "-9999px", top: "-9999px", opacity: 0, pointerEvents: "none" }} aria-hidden="true">
               <input
                 type="text"
                 name="company"
                 value={hpCompany}
                 onChange={(e) => setHpCompany(e.target.value)}
-                placeholder="Deixar vazio = humano / preencher = bot"
-                className="w-full rounded-lg border border-input bg-card px-3 py-2.5 text-sm text-foreground placeholder:text-[#eee] focus:outline-none focus:ring-2 focus:ring-ring"
+                tabIndex={-1}
+                autoComplete="off"
               />
             </div>
 
