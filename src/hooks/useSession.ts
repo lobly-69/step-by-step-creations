@@ -47,20 +47,22 @@ export interface UploadUrlEntry {
   token: string;
 }
 
+interface FinalizePayload {
+  first_name: string;
+  last_name: string;
+  country_code?: string | null;
+  dial_code?: string | null;
+  whatsapp_number?: string | null;
+  email?: string | null;
+  honeypot?: string;
+}
+
 interface UseSessionReturn {
   sessionId: string | null;
   sessionReady: boolean;
   updateStep: (payload: Record<string, unknown>) => Promise<void>;
   getUploadUrls: (files: { ext: string }[]) => Promise<UploadUrlEntry[]>;
-  finalizeSession: (payload: {
-    first_name: string;
-    last_name: string;
-    country_code?: string | null;
-    dial_code?: string | null;
-    whatsapp_number?: string | null;
-    email?: string | null;
-    honeypot?: string;
-  }) => Promise<{ success: boolean; entry_number?: number; error_code?: string; error?: string }>;
+  finalizeSession: (payload: FinalizePayload) => Promise<{ success: boolean; entry_number?: number; error_code?: string; error?: string }>;
 }
 
 export function useSession(): UseSessionReturn {
@@ -108,14 +110,7 @@ export function useSession(): UseSessionReturn {
   );
 
   const finalizeSession = useCallback(
-    async (payload: {
-      first_name: string;
-      last_name: string;
-      country_code?: string | null;
-      dial_code?: string | null;
-      whatsapp_number?: string | null;
-      email?: string | null;
-    }): Promise<{ success: boolean; entry_number?: number; error_code?: string; error?: string }> => {
+    async (payload: FinalizePayload): Promise<{ success: boolean; entry_number?: number; error_code?: string; error?: string }> => {
       if (!sessionId) throw new Error("No session");
 
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
