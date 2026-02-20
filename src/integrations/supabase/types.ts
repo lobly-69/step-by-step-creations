@@ -174,6 +174,30 @@ export type Database = {
         }
         Relationships: []
       }
+      builder_rate_limits: {
+        Row: {
+          blocked_until: string | null
+          count: number
+          key: string
+          updated_at: string
+          window_start: string
+        }
+        Insert: {
+          blocked_until?: string | null
+          count: number
+          key: string
+          updated_at?: string
+          window_start: string
+        }
+        Update: {
+          blocked_until?: string | null
+          count?: number
+          key?: string
+          updated_at?: string
+          window_start?: string
+        }
+        Relationships: []
+      }
       builder_sessions: {
         Row: {
           abandoned_at: string | null
@@ -184,6 +208,7 @@ export type Database = {
           dial_code: string | null
           email: string | null
           entry_number: number | null
+          finalize_started_at: string | null
           first_name: string | null
           frame_prefix: string | null
           full_name: string | null
@@ -196,6 +221,9 @@ export type Database = {
           session_id: string
           size: string | null
           updated_at: string
+          webhook_attempts: number
+          webhook_last_error: string | null
+          webhook_sent_at: string | null
           whatsapp_full: string | null
           whatsapp_number: string | null
         }
@@ -208,6 +236,7 @@ export type Database = {
           dial_code?: string | null
           email?: string | null
           entry_number?: number | null
+          finalize_started_at?: string | null
           first_name?: string | null
           frame_prefix?: string | null
           full_name?: string | null
@@ -220,6 +249,9 @@ export type Database = {
           session_id?: string
           size?: string | null
           updated_at?: string
+          webhook_attempts?: number
+          webhook_last_error?: string | null
+          webhook_sent_at?: string | null
           whatsapp_full?: string | null
           whatsapp_number?: string | null
         }
@@ -232,6 +264,7 @@ export type Database = {
           dial_code?: string | null
           email?: string | null
           entry_number?: number | null
+          finalize_started_at?: string | null
           first_name?: string | null
           frame_prefix?: string | null
           full_name?: string | null
@@ -244,6 +277,9 @@ export type Database = {
           session_id?: string
           size?: string | null
           updated_at?: string
+          webhook_attempts?: number
+          webhook_last_error?: string | null
+          webhook_sent_at?: string | null
           whatsapp_full?: string | null
           whatsapp_number?: string | null
         }
@@ -580,6 +616,19 @@ export type Database = {
       }
     }
     Functions: {
+      check_builder_rate_limit: {
+        Args: {
+          p_block_seconds?: number
+          p_key: string
+          p_limit: number
+          p_window_seconds: number
+        }
+        Returns: {
+          allowed: boolean
+          remaining: number
+          retry_after: number
+        }[]
+      }
       cleanup_builder_sessions_sql:
         | { Args: never; Returns: undefined }
         | { Args: { p_older_than_hours?: number }; Returns: Json }
