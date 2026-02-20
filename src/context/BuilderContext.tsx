@@ -42,7 +42,7 @@ interface BuilderContextType {
     dial_code?: string | null;
     whatsapp_number?: string | null;
     email?: string | null;
-  }) => Promise<{ success: boolean; entry_number?: number }>;
+  }) => Promise<{ success: boolean; entry_number?: number; error_code?: string; error?: string }>;
 }
 
 const BuilderContext = createContext<BuilderContextType | null>(null);

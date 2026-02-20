@@ -33,6 +33,8 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
   const [emailTouched, setEmailTouched] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [phoneBackendError, setPhoneBackendError] = useState<string | null>(null);
+  const [emailBackendError, setEmailBackendError] = useState<string | null>(null);
 
   // Strip everything except digits
   const sanitizeNumber = (v: string) => v.replace(/\D/g, "");
@@ -49,8 +51,11 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
 
   const firstNameError = firstNameTouched && !isValidName(firstName);
   const lastNameError = lastNameTouched && !isValidName(lastName);
-  const phoneError = !showEmail && phoneTouched && !isValidPhone(phone);
-  const emailError = showEmail && emailTouched && !isValidEmail(email);
+  const phoneError = !showEmail && phoneTouched && (!isValidPhone(phone) || !!phoneBackendError);
+  const emailError = showEmail && emailTouched && (!isValidEmail(email) || !!emailBackendError);
+
+  const phoneErrorMsg = phoneBackendError ?? "Número de Whatsapp Inválido";
+  const emailErrorMsg = emailBackendError ?? "Email inválido";
 
   const getDialCode = () => {
     if (country === "outro") return customCode.trim();
@@ -68,16 +73,29 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
     return isValidPhone(phone);
   };
 
+  const WHATSAPP_ERROR_CODES = new Set([
+    "INVALID_FORMAT",
+    "INVALID_PATTERN",
+    "INVALID_PREFIX",
+    "BLOCKED_NUMBER",
+    "UNSUPPORTED_COUNTRY",
+  ]);
+  const EMAIL_ERROR_CODES = new Set(["INVALID_EMAIL"]);
+
   const handleSubmit = async () => {
     setFirstNameTouched(true);
     setLastNameTouched(true);
     if (showEmail) setEmailTouched(true);
     else setPhoneTouched(true);
 
+    // Clear backend field errors on new attempt
+    setPhoneBackendError(null);
+    setEmailBackendError(null);
+    setSubmitError(null);
+
     if (!isFormValid()) return;
 
     setSubmitting(true);
-    setSubmitError(null);
 
     try {
       const emailVal = showEmail ? email.trim() : null;
@@ -96,10 +114,27 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
 
       if (result.success) {
         window.location.href = "https://lobly.pt/sucesso/";
+        return;
+      }
+
+      const code = result.error_code;
+
+      if (code) {
+        if (!showEmail && (WHATSAPP_ERROR_CODES.has(code) || code === "MISSING_CONTACT")) {
+          setPhoneBackendError("Número de Whatsapp Inválido");
+          setPhoneTouched(true);
+        } else if (showEmail && (EMAIL_ERROR_CODES.has(code) || code === "MISSING_CONTACT")) {
+          setEmailBackendError("Email inválido");
+          setEmailTouched(true);
+        } else {
+          // Known code but unhandled context — show generic
+          setSubmitError("Ocorreu um erro. Tenta novamente.");
+        }
       } else {
+        // No error_code — truly unexpected
         setSubmitError("Ocorreu um erro. Tenta novamente.");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("finalizeSession error:", err);
       setSubmitError("Ocorreu um erro. Tenta novamente.");
     } finally {
@@ -204,7 +239,7 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
                   <input
                     type="tel"
                     value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
+                    onChange={(e) => { setPhone(e.target.value); setPhoneBackendError(null); }}
                     onBlur={() => setPhoneTouched(true)}
                     placeholder="ex: 926948901"
                     inputMode="numeric"
@@ -214,7 +249,7 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
                   />
                 </div>
                 {phoneError && (
-                  <p className="text-[10px] text-destructive mt-0.5">Número de Whatsapp Inválido</p>
+                  <p className="text-[10px] text-destructive mt-0.5">{phoneErrorMsg}</p>
                 )}
               </div>
             )}
@@ -237,7 +272,7 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
                   <input
                     type="email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => { setEmail(e.target.value); setEmailBackendError(null); }}
                     onBlur={() => setEmailTouched(true)}
                     placeholder="O teu email"
                     className={`w-full rounded-lg border bg-card px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-colors ${
@@ -245,7 +280,7 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
                     }`}
                   />
                   {emailError && (
-                    <p className="text-[10px] text-destructive mt-0.5">Email inválido</p>
+                    <p className="text-[10px] text-destructive mt-0.5">{emailErrorMsg}</p>
                   )}
                 </div>
                 <p
