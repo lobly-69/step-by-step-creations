@@ -26,18 +26,31 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
   const [lastNameTouched, setLastNameTouched] = useState(false);
   const [country, setCountry] = useState("pt");
   const [phone, setPhone] = useState("");
+  const [phoneTouched, setPhoneTouched] = useState(false);
   const [customCode, setCustomCode] = useState("");
   const [showEmail, setShowEmail] = useState(false);
   const [email, setEmail] = useState("");
+  const [emailTouched, setEmailTouched] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const firstNameError =
-    firstNameTouched &&
-    (firstName.trim().replace(/\s{2,}/g, " ").length < 2 || !nameRegex.test(firstName.trim()));
-  const lastNameError =
-    lastNameTouched &&
-    (lastName.trim().replace(/\s{2,}/g, " ").length < 2 || !nameRegex.test(lastName.trim()));
+  // Strip everything except digits
+  const sanitizeNumber = (v: string) => v.replace(/\D/g, "");
+
+  const isValidName = (v: string) =>
+    v.trim().replace(/\s{2,}/g, " ").length >= 2 && nameRegex.test(v.trim());
+
+  const isValidPhone = (v: string) => sanitizeNumber(v).length > 0;
+
+  const isValidEmail = (v: string) => {
+    const t = v.trim();
+    return t.length > 3 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(t);
+  };
+
+  const firstNameError = firstNameTouched && !isValidName(firstName);
+  const lastNameError = lastNameTouched && !isValidName(lastName);
+  const phoneError = !showEmail && phoneTouched && !isValidPhone(phone);
+  const emailError = showEmail && emailTouched && !isValidEmail(email);
 
   const getDialCode = () => {
     if (country === "outro") return customCode.trim();
@@ -49,24 +62,17 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
     return countryCodes.find((c) => c.id === country)?.countryCode ?? null;
   };
 
-  // Strip everything except digits
-  const sanitizeNumber = (v: string) => v.replace(/\D/g, "");
-
   const isFormValid = () => {
-    const fnOk =
-      firstName.trim().replace(/\s{2,}/g, " ").length >= 2 &&
-      nameRegex.test(firstName.trim());
-    const lnOk =
-      lastName.trim().replace(/\s{2,}/g, " ").length >= 2 &&
-      nameRegex.test(lastName.trim());
-    if (!fnOk || !lnOk) return false;
-    if (showEmail) return email.trim().length > 3;
-    return sanitizeNumber(phone).length > 0;
+    if (!isValidName(firstName) || !isValidName(lastName)) return false;
+    if (showEmail) return isValidEmail(email);
+    return isValidPhone(phone);
   };
 
   const handleSubmit = async () => {
     setFirstNameTouched(true);
     setLastNameTouched(true);
+    if (showEmail) setEmailTouched(true);
+    else setPhoneTouched(true);
 
     if (!isFormValid()) return;
 
@@ -199,19 +205,25 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
                     type="tel"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
+                    onBlur={() => setPhoneTouched(true)}
                     placeholder="ex: 926948901"
                     inputMode="numeric"
-                    className="flex-1 min-w-0 rounded-lg border border-input bg-card px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                    className={`flex-1 min-w-0 rounded-lg border bg-card px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-colors ${
+                      phoneError ? "border-destructive focus:ring-destructive/40" : "border-input"
+                    }`}
                   />
                 </div>
+                {phoneError && (
+                  <p className="text-[10px] text-destructive mt-0.5">Número de Whatsapp Inválido</p>
+                )}
               </div>
             )}
 
             {/* Toggle to email */}
             {!showEmail && (
               <p
-                onClick={() => setShowEmail(true)}
-                className="text-xs font-semibold text-foreground underline cursor-pointer text-center"
+                onClick={() => { setShowEmail(true); setPhoneTouched(false); }}
+                className="text-xs font-semibold text-muted-foreground underline cursor-pointer text-center"
               >
                 Não tenho WhatsApp
               </p>
@@ -226,13 +238,19 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    onBlur={() => setEmailTouched(true)}
                     placeholder="O teu email"
-                    className="w-full rounded-lg border border-input bg-card px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                    className={`w-full rounded-lg border bg-card px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-colors ${
+                      emailError ? "border-destructive focus:ring-destructive/40" : "border-input"
+                    }`}
                   />
+                  {emailError && (
+                    <p className="text-[10px] text-destructive mt-0.5">Email inválido</p>
+                  )}
                 </div>
                 <p
-                  onClick={() => setShowEmail(false)}
-                  className="text-xs font-semibold text-foreground underline cursor-pointer text-center"
+                  onClick={() => { setShowEmail(false); setEmailTouched(false); }}
+                  className="text-xs font-semibold text-muted-foreground underline cursor-pointer text-center"
                 >
                   Prefiro por WhatsApp
                 </p>
