@@ -137,6 +137,28 @@ export function useSession(): UseSessionReturn {
         return { success: true, entry_number: data.entry_number };
       }
 
+      // Handle 409 Conflict — session may have already been finalized
+      if (res.status === 409) {
+        const { data: session } = await supabase
+          .from("builder_sessions")
+          .select("lifecycle_status, entry_number")
+          .eq("session_id", sessionId)
+          .maybeSingle();
+
+        if (session?.lifecycle_status === "FINALIZED") {
+          localStorage.removeItem(SESSION_KEY);
+          return { success: true, entry_number: session.entry_number ?? data.entry_number };
+        }
+
+        // Not finalized — clear stale session so next attempt creates a fresh one
+        localStorage.removeItem(SESSION_KEY);
+        return {
+          success: false,
+          error_code: data.error_code ?? "SESSION_CONFLICT",
+          error: data.error ?? "Session conflict",
+        };
+      }
+
       // Return error details without throwing — let the caller handle them
       return {
         success: false,
