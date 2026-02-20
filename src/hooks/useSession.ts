@@ -54,7 +54,7 @@ interface FinalizePayload {
   dial_code?: string | null;
   whatsapp_number?: string | null;
   email?: string | null;
-  honeypot?: string;
+  honeypot?: string | null;
 }
 
 interface UseSessionReturn {
@@ -123,7 +123,11 @@ export function useSession(): UseSessionReturn {
           apikey: anonKey,
           Authorization: `Bearer ${anonKey}`,
         },
-        body: JSON.stringify({ session_id: sessionId, ...payload }),
+        body: JSON.stringify({
+          session_id: sessionId,
+          ...payload,
+          honeypot: payload.honeypot ?? null,
+        }),
       });
 
       const data = await res.json().catch(() => ({}));
