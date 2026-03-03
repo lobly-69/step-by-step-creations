@@ -18,7 +18,7 @@ const countryCodes = [
 const nameRegex = /^[^\d]*$/; // no digits allowed
 
 const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
-  const { finalizeSession } = useBuilder();
+  const { finalizeSession, noPhotos, updateStep, state, config, sessionId } = useBuilder();
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -100,6 +100,11 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
     setSubmitting(true);
 
     try {
+      // If finalizing without photos, mark result_code on the session first
+      if (noPhotos) {
+        await updateStep({ result_code: "NO_UPLOAD_FINALIZED" });
+      }
+
       const emailVal = showEmail ? email.trim() : null;
       const dialCode = showEmail ? null : getDialCode();
       const countryCode = showEmail ? null : getCountryCode();
@@ -112,13 +117,28 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
         dial_code: dialCode,
         whatsapp_number: whatsappNumber || null,
         email: emailVal,
-
-        // ✅ Honeypot vai no payload (campo invisível)
         honeypot: hpCompany,
       });
 
       if (result.success) {
-        window.location.href = "https://lobly.pt/sucesso/";
+        if (noPhotos) {
+          // Build info string for the pending-photos page
+          const sizeLabel = state.tamanho ? `${state.tamanho}cm` : "";
+          const frameLabel = (() => {
+            if (!state.cores.frame) return "";
+            const f = config.frameColors.find((fr) => fr.prefix === state.cores.frame);
+            return f?.display_name_pt || f?.name || "";
+          })();
+          const params = new URLSearchParams({
+            pendente: "1",
+            tamanho: sizeLabel,
+            moldura: frameLabel,
+            ...(sessionId ? { sid: sessionId } : {}),
+          });
+          window.location.href = `https://lobly.pt/sucesso/?${params.toString()}`;
+        } else {
+          window.location.href = "https://lobly.pt/sucesso/";
+        }
         return;
       }
 
@@ -171,10 +191,17 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
         <img src={helpdeskImg} alt="" className="w-full h-auto object-contain" />
 
         <div className="p-5">
+          {noPhotos && (
+            <div className="bg-accent/60 border border-accent rounded-lg px-3 py-2 mb-3">
+              <p className="text-xs font-semibold text-foreground text-center">⚠️ Pedido pendente: falta enviar fotos</p>
+              <p className="text-[10px] text-muted-foreground text-center mt-0.5">Vamos contactar-te para receber as fotografias.</p>
+            </div>
+          )}
           <h2 className="text-lg font-bold text-foreground text-center mb-0.5">Estamos quase lá...</h2>
           <p className="text-xs text-muted-foreground text-center mb-4">
-            Deixa-nos o teu WhatsApp para te enviarmos o Desenho assim que estiver pronto. Não tens que pagar nada agora
-            e só avançamos se Gostares...
+            {noPhotos
+              ? "Deixa-nos o teu contacto para enviarmos as instruções de como nos enviar as fotos depois."
+              : "Deixa-nos o teu WhatsApp para te enviarmos o Desenho assim que estiver pronto. Não tens que pagar nada agora e só avançamos se Gostares..."}
           </p>
 
           <div className="flex flex-col gap-3">

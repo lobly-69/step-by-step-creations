@@ -9,7 +9,7 @@ import StepUpload from "@/components/builder/StepUpload";
 import FinalModal from "@/components/builder/FinalModal";
 
 const BuilderWizard = () => {
-  const { isStepComplete, canAccessStep, markStepVisited, configOffline, getMockupUrl } = useBuilder();
+  const { isStepComplete, canAccessStep, markStepVisited, configOffline, getMockupUrl, setNoPhotos } = useBuilder();
   const location = useLocation();
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
@@ -81,6 +81,16 @@ const BuilderWizard = () => {
     }
   }, [validIndex, isStepComplete, markStepVisited, navigate, showToast]);
 
+  const handleSkipPhotos = useCallback(() => {
+    setNoPhotos(true);
+    setModalOpen(true);
+  }, [setNoPhotos]);
+
+  const handleModalClose = useCallback(() => {
+    setModalOpen(false);
+    setNoPhotos(false);
+  }, [setNoPhotos]);
+
   const handleStepClick = useCallback((index: number) => {
     navigate(`/${stepsConfig[index].route}`);
     setError(null);
@@ -88,7 +98,7 @@ const BuilderWizard = () => {
 
   const stepComponents: Record<string, React.ReactNode> = {
     personalizacao: <StepPersonalizacao onError={setError} />,
-    upload: <StepUpload onError={setError} />,
+    upload: <StepUpload onError={setError} onSkipPhotos={handleSkipPhotos} />,
   };
 
   return (
@@ -103,7 +113,7 @@ const BuilderWizard = () => {
       >
         {stepComponents[stepsConfig[validIndex].id]}
       </BuilderLayout>
-      <FinalModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
+      <FinalModal isOpen={modalOpen} onClose={handleModalClose} />
     </>
   );
 };
