@@ -23,6 +23,8 @@ interface BuilderContextType {
   configOffline: boolean;
   visitedSteps: Set<string>;
   sessionId: string | null;
+  noPhotos: boolean;
+  setNoPhotos: (v: boolean) => void;
   setTamanho: (id: string) => void;
   setFrame: (prefix: string) => void;
   setFundo: (name: string) => void;
@@ -35,6 +37,7 @@ interface BuilderContextType {
   currentPrice: { oldPrice: number; newPrice: number };
   getMockupUrl: () => string | null;
   getUploadUrls: (files: { ext: string; size?: number }[]) => Promise<UploadUrlEntry[]>;
+  updateStep: (payload: Record<string, unknown>) => Promise<void>;
   finalizeSession: (payload: {
     first_name: string;
     last_name: string;
@@ -74,6 +77,7 @@ export const BuilderProvider: React.FC<BuilderProviderProps> = ({
   });
   const [visitedSteps, setVisitedSteps] = useState<Set<string>>(new Set());
   const [defaultsApplied, setDefaultsApplied] = useState(false);
+  const [noPhotos, setNoPhotos] = useState(false);
 
   const { sessionId, updateStep, getUploadUrls, finalizeSession } = useSession();
 
@@ -238,6 +242,8 @@ export const BuilderProvider: React.FC<BuilderProviderProps> = ({
         configOffline,
         visitedSteps,
         sessionId,
+        noPhotos,
+        setNoPhotos,
         setTamanho,
         setFrame,
         setFundo,
@@ -250,6 +256,7 @@ export const BuilderProvider: React.FC<BuilderProviderProps> = ({
         currentPrice,
         getMockupUrl,
         getUploadUrls,
+        updateStep,
         finalizeSession,
       }}
     >

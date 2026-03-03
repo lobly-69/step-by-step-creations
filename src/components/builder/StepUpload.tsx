@@ -26,9 +26,10 @@ function getExt(file: File): string {
 
 interface StepUploadProps {
   onError: (msg: string | null) => void;
+  onSkipPhotos?: () => void;
 }
 
-const StepUpload = ({ onError }: StepUploadProps) => {
+const StepUpload = ({ onError, onSkipPhotos }: StepUploadProps) => {
   const { state, addFile, removeFile, setProgress, getUploadUrls } = useBuilder();
   const fileInputRefs = useRef<(HTMLInputElement | null)[]>([null, null, null]);
   const [helpModalOpen, setHelpModalOpen] = useState(false);
@@ -165,12 +166,20 @@ const StepUpload = ({ onError }: StepUploadProps) => {
       </div>
 
       {uploadedCount === 0 && (
-        <p
-          onClick={() => setHelpModalOpen(true)}
-          className="text-xs font-semibold text-foreground underline mt-3 cursor-pointer text-center"
-        >
-          Não estou a conseguir Subir a Foto
-        </p>
+        <>
+          <p
+            onClick={() => setHelpModalOpen(true)}
+            className="text-xs font-semibold text-foreground underline mt-3 cursor-pointer text-center"
+          >
+            Não estou a conseguir Subir a Foto
+          </p>
+          <p
+            onClick={onSkipPhotos}
+            className="text-xs font-medium text-muted-foreground underline mt-1 cursor-pointer text-center"
+          >
+            Finalizar sem fotos
+          </p>
+        </>
       )}
 
       <p className="text-[10px] text-muted-foreground mt-2 text-center">Poderás adicionar até 3 Fotos nos formatos: JPG, JPEG, PNG, WEBP e HEIC. Tamanho maximo: 30MB.</p>

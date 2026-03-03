@@ -83,6 +83,33 @@ export type Database = {
         }
         Relationships: []
       }
+      builder_errors: {
+        Row: {
+          created_at: string | null
+          id: number
+          message: string | null
+          meta: Json | null
+          session_id: string | null
+          stage: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: number
+          message?: string | null
+          meta?: Json | null
+          session_id?: string | null
+          stage?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: number
+          message?: string | null
+          meta?: Json | null
+          session_id?: string | null
+          stage?: string | null
+        }
+        Relationships: []
+      }
       builder_files: {
         Row: {
           bucket: string
