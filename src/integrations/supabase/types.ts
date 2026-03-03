@@ -614,6 +614,61 @@ export type Database = {
           },
         ]
       }
+      v_builder_funnel_1row: {
+        Row: {
+          pct_at_size: number | null
+          pct_at_upload: number | null
+          pct_leads: number | null
+          total_leads: number | null
+          total_size: number | null
+          total_starts: number | null
+          total_upload: number | null
+        }
+        Relationships: []
+      }
+      v_builder_funnel_1row_full: {
+        Row: {
+          ab_colors: number | null
+          ab_confirm: number | null
+          ab_entered: number | null
+          ab_size: number | null
+          ab_upload: number | null
+          now_colors: number | null
+          now_confirm: number | null
+          now_entered: number | null
+          now_size: number | null
+          now_upload: number | null
+          pct_ab_colors: number | null
+          pct_ab_confirm: number | null
+          pct_ab_entered: number | null
+          pct_ab_size: number | null
+          pct_ab_upload: number | null
+          pct_abandoned: number | null
+          pct_now_colors: number | null
+          pct_now_confirm: number | null
+          pct_now_entered: number | null
+          pct_now_size: number | null
+          pct_now_upload: number | null
+          pct_success: number | null
+          total_abandoned: number | null
+          total_starts: number | null
+          total_success: number | null
+        }
+        Relationships: []
+      }
+      v_builder_funnel_overall: {
+        Row: {
+          conversion_pct: number | null
+          entries: number | null
+          leads: number | null
+          row_type: string | null
+          sessions_in_step: number | null
+          sort_order: number | null
+          step: string | null
+          step_share_pct: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       check_builder_rate_limit: {
