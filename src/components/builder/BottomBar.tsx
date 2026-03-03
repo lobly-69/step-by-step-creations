@@ -1,5 +1,6 @@
 import { useBuilder } from "@/context/BuilderContext";
 import { Check } from "lucide-react";
+import { useEffect } from "react";
 
 interface BottomBarProps {
   onAdvance: () => void;
@@ -7,8 +8,17 @@ interface BottomBarProps {
 }
 
 const BottomBar = ({ onAdvance, buttonLabel = "Avançar" }: BottomBarProps) => {
-  const { getCurrentPrice } = useBuilder();
-  const { oldPrice, newPrice } = getCurrentPrice();
+  const { currentPrice, state } = useBuilder();
+  const { oldPrice, newPrice } = currentPrice;
+
+  // Temporary debug log for slow Android devices
+  useEffect(() => {
+    console.log("[BottomBar Debug]", {
+      selectedSize: state.tamanho,
+      oldPrice,
+      newPrice,
+    });
+  }, [state.tamanho, oldPrice, newPrice]);
 
   const formatPrice = (price: number) =>
     price.toFixed(2).replace(".", ",") + "€";

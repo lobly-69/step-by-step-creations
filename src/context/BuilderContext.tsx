@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback, useEffect } from "react";
+import React, { createContext, useContext, useState, useCallback, useEffect, useMemo } from "react";
 import { stepsConfig } from "@/config/stepsConfig";
 import type { AppConfig } from "@/lib/configTypes";
 import { useSession, type UploadUrlEntry } from "@/hooks/useSession";
@@ -32,7 +32,7 @@ interface BuilderContextType {
   markStepVisited: (stepId: string) => void;
   isStepComplete: (stepId: string) => boolean;
   canAccessStep: (stepIndex: number) => boolean;
-  getCurrentPrice: () => { oldPrice: number; newPrice: number };
+  currentPrice: { oldPrice: number; newPrice: number };
   getMockupUrl: () => string | null;
   getUploadUrls: (files: { ext: string; size?: number }[]) => Promise<UploadUrlEntry[]>;
   finalizeSession: (payload: {
@@ -201,7 +201,7 @@ export const BuilderProvider: React.FC<BuilderProviderProps> = ({
     [isStepComplete]
   );
 
-  const getCurrentPrice = useCallback(() => {
+  const currentPrice = useMemo(() => {
     const defaultSize = config.sizes[0];
     const fallback = defaultSize
       ? { oldPrice: defaultSize.price, newPrice: defaultSize.promo_price ?? defaultSize.price }
@@ -247,7 +247,7 @@ export const BuilderProvider: React.FC<BuilderProviderProps> = ({
         markStepVisited,
         isStepComplete,
         canAccessStep,
-        getCurrentPrice,
+        currentPrice,
         getMockupUrl,
         getUploadUrls,
         finalizeSession,
