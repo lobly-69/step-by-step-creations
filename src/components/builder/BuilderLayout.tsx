@@ -37,7 +37,7 @@ const BuilderLayout = ({ currentStepIndex, children, onAdvance, onStepClick, bot
           <MockupImage />
           <StepIndicator currentStepIndex={currentStepIndex} onStepClick={onStepClick} />
         </div>
-        <div className="flex-1 overflow-y-auto px-5 py-3" style={{ paddingBottom: 'calc(70px + env(safe-area-inset-bottom, 0px))' }}>
+        <div className="flex-1 overflow-y-auto px-5 py-3" style={{ paddingBottom: 'calc(85px + env(safe-area-inset-bottom, 0px))' }}>
           <div className="slide-step">{children}</div>
         </div>
 
