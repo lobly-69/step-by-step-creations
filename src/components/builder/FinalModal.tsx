@@ -201,7 +201,7 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
           <p className="text-xs text-muted-foreground text-center mb-4">
             {noPhotos
               ? "Deixa-nos o teu contacto para enviarmos as instruções de como nos enviar as fotos depois."
-              : "Deixa-nos o teu WhatsApp para te enviarmos o Desenho assim que estiver pronto. Não tens que pagar nada agora e só avançamos se Gostares..."}
+              : <><strong>Deixa-nos o teu WhatsApp para te enviarmos o Desenho</strong> assim que estiver pronto. <strong>Não tens que pagar nada agora</strong> e só avançamos se Gostares...</>}
           </p>
 
           <div className="flex flex-col gap-3">
