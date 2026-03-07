@@ -194,11 +194,11 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
           {noPhotos && (
             <div className="bg-accent/60 border border-accent rounded-lg px-3 py-2 mb-3">
               <p className="text-xs font-semibold text-foreground text-center">⚠️ Pedido pendente: falta enviar fotos</p>
-              <p className="text-[10px] text-muted-foreground text-center mt-0.5">Vamos contactar-te para receber as fotografias.</p>
+              <p className="text-[10px] text-foreground text-center mt-0.5">Vamos contactar-te para receber as fotografias.</p>
             </div>
           )}
           <h2 className="text-lg font-bold text-foreground text-center mb-0.5">Estamos quase lá...</h2>
-          <p className="text-xs text-muted-foreground text-center mb-4">
+          <p className="text-xs text-foreground text-center mb-4">
             {noPhotos
               ? "Deixa-nos o teu contacto para enviarmos as instruções de como nos enviar as fotos depois."
               : <><strong>Deixa-nos o teu WhatsApp para te enviarmos o Desenho</strong> assim que estiver pronto. <strong>Não tens que pagar nada agora</strong> e só avançamos se Gostares...</>}
@@ -361,7 +361,7 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
               {submitting ? "A enviar..." : "Finalizar pedido"}
             </button>
 
-            <p className="text-[8px] md:text-[10px] text-muted-foreground text-center mt-0 leading-[1.2]">
+            <p className="text-[8px] md:text-[10px] text-foreground text-center mt-0 leading-[1.2]">
               Apenas usamos o teu contacto para enviar a tua Ilustração Personalizada. Nada de Spam nem Publicidade
             </p>
           </div>
