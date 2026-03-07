@@ -107,7 +107,7 @@ const BuilderWizard = () => {
         currentStepIndex={validIndex}
         onAdvance={handleAdvance}
         onStepClick={handleStepClick}
-        bottomLabel={validIndex === stepsConfig.length - 1 ? "Finalizar" : "Avançar"}
+        bottomLabel={validIndex === stepsConfig.length - 1 ? "Finalizar" : "Confirmar"}
         toastMessage={toastMsg}
         onToastDismiss={() => setToastMsg(null)}
       >
