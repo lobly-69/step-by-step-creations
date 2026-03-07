@@ -61,7 +61,8 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
 
       {/* Tamanhos */}
       <div>
-        <p className="text-xs font-semibold text-foreground mb-1">Escolhe o Tamanho:</p>
+        <p className="text-xs font-semibold text-foreground mb-0.5">Escolhe o Tamanho:</p>
+        <p className="text-[10px] text-muted-foreground mb-1.5">Servirá apenas de Referência e poderá ser alterado mais tarde</p>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-1.5">
           {config.sizes.map((opt) => {
             const selected = state.tamanho === opt.size;
@@ -106,7 +107,7 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
             );
           })}
         </div>
-        <div className="mt-[5px] rounded-lg border border-promo/40 bg-promo/10 px-3 py-2 text-center">
+        <div className="mt-3 rounded-lg border border-promo/40 bg-promo/10 px-3 py-2 text-center">
           <p className="text-[11px] text-foreground leading-snug">
             ⚠️ <strong>Só terás que Pagar depois de Aprovar as Maquetes</strong> que te vamos enviar (sem compromisso) <strong>por Whatsapp</strong>...
           </p>

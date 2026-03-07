@@ -1,6 +1,6 @@
 import { stepsConfig } from "@/config/stepsConfig";
 import { useBuilder } from "@/context/BuilderContext";
-import { Check, Lock } from "lucide-react";
+import { Check } from "lucide-react";
 
 interface StepIndicatorProps {
   currentStepIndex: number;
@@ -44,8 +44,6 @@ const StepIndicator = ({ currentStepIndex, onStepClick }: StepIndicatorProps) =>
               >
                 {completed ? (
                   <Check className="w-3 h-3" />
-                ) : locked ? (
-                  <Lock className="w-2.5 h-2.5" />
                 ) : (
                   index + 1
                 )}
