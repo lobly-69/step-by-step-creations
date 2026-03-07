@@ -43,9 +43,9 @@ const BottomBar = ({ onAdvance, buttonLabel = "Avançar" }: BottomBarProps) => {
           <Check className="w-4 h-4" />
         </button>
       </div>
-      <div className="w-full bg-card border-t border-border py-1.5 flex items-center justify-center gap-1.5">
-        <Info className="w-3.5 h-3.5 text-promo" />
-        <span className="text-[11px] font-semibold text-promo">Não tens que pagar nada nesta fase</span>
+      <div className="w-full bg-card py-0.5 flex items-center justify-center gap-1">
+        <Info className="w-3 h-3 text-promo" />
+        <span className="text-[10px] font-semibold text-promo">Não tens que pagar nada nesta fase</span>
       </div>
     </div>
   );
