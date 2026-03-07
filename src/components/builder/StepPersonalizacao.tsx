@@ -61,8 +61,7 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
 
       {/* Tamanhos */}
       <div>
-        <p className="text-xs font-semibold text-foreground mb-0.5">Escolhe o Tamanho:</p>
-        <p className="text-[10px] text-muted-foreground mb-1.5">Servirá apenas de Referência e poderá ser alterado mais tarde</p>
+        <p className="text-xs font-semibold text-foreground mb-1.5">Escolhe o Tamanho:</p>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-1.5">
           {config.sizes.map((opt) => {
             const selected = state.tamanho === opt.size;
