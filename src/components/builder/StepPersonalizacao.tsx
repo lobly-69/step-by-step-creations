@@ -109,7 +109,7 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
         </div>
         <div className="mt-3 rounded-lg border border-promo/40 bg-promo/10 px-3 py-2 text-center">
           <p className="text-[11px] text-foreground leading-snug">
-            ⚠️ <strong>Só terás que Pagar depois de Aprovar as Maquetes</strong> que te vamos enviar (sem compromisso) <strong>por Whatsapp</strong>...
+            ⚠️ <strong>Não pagas nada agora, só depois de Aprovar as Maquetes</strong> que te vamos enviar (sem compromisso) <strong>por Whatsapp</strong>...
           </p>
         </div>
       </div>
