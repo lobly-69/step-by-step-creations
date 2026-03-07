@@ -106,9 +106,9 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
             );
           })}
         </div>
-        <div className="mt-2 rounded-lg border border-promo/40 bg-promo/10 px-3 py-2 text-center">
+        <div className="mt-[5px] rounded-lg border border-promo/40 bg-promo/10 px-3 py-2 text-center">
           <p className="text-[11px] text-foreground leading-snug">
-            ⚠️ Este será o preço da tua Moldura Personalizada, mas <strong>Só Pagas depois de Aprovar as Maquetes</strong> que te vão ser enviadas (sem Compromisso) <strong>por Whatsapp</strong>...
+            ⚠️ <strong>Só terás que Pagar depois de Aprovar as Maquetes</strong> que te vamos enviar (sem compromisso) <strong>por Whatsapp</strong>...
           </p>
         </div>
       </div>
