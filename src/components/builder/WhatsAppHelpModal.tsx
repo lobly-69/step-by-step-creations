@@ -47,10 +47,12 @@ const WhatsAppHelpModal = ({ isOpen, onClose, variant = "help" }: WhatsAppHelpMo
           </div>
 
           <h2 className="text-lg font-bold text-foreground text-center mb-1">
-            Não consegues enviar as fotos?
+            {variant === "error" ? "Ops.. Ocorreu um Erro..." : "Não consegues enviar as fotos?"}
           </h2>
           <p className="text-xs text-muted-foreground text-center mb-5">
-            Envia as fotografias por WhatsApp para darmos seguimento ao pedido.
+            {variant === "error"
+              ? "Parece que ocorreu um erro ao submeter o teu pedido. Queres fazer o Pedido diretamente pelo Whatsapp?"
+              : "Envia as fotografias por WhatsApp para darmos seguimento ao pedido."}
           </p>
 
           {!hasSelection && (
