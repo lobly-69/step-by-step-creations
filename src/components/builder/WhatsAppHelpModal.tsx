@@ -4,9 +4,10 @@ import { useBuilder } from "@/context/BuilderContext";
 interface WhatsAppHelpModalProps {
   isOpen: boolean;
   onClose: () => void;
+  variant?: "help" | "error";
 }
 
-const WhatsAppHelpModal = ({ isOpen, onClose }: WhatsAppHelpModalProps) => {
+const WhatsAppHelpModal = ({ isOpen, onClose, variant = "help" }: WhatsAppHelpModalProps) => {
   const { state, config } = useBuilder();
 
   if (!isOpen) return null;
