@@ -37,6 +37,8 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
   const [phoneBackendError, setPhoneBackendError] = useState<string | null>(null);
   const [emailBackendError, setEmailBackendError] = useState<string | null>(null);
 
+  const [errorModalOpen, setErrorModalOpen] = useState(false);
+
   // ✅ Honeypot (invisível para humanos)
   const [hpCompany, setHpCompany] = useState("");
 
