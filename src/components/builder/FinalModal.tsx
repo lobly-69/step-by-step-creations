@@ -149,7 +149,7 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
 
       // Não revelar “honeypot” ao utilizador
       if (code === "HONEYPOT") {
-        setSubmitError("Ocorreu um erro. Tenta novamente.");
+        setErrorModalOpen(true);
         return;
       }
 
