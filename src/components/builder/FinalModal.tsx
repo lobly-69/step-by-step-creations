@@ -356,6 +356,8 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
 
             {submitError && <p className="text-xs text-destructive text-center">{submitError}</p>}
 
+            <WhatsAppHelpModal isOpen={errorModalOpen} onClose={() => setErrorModalOpen(false)} variant="error" />
+
             <button
               onClick={handleSubmit}
               disabled={submitting}
