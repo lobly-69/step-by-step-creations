@@ -168,7 +168,7 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
       }
     } catch (err: unknown) {
       console.error("finalizeSession error:", err);
-      setSubmitError("Ocorreu um erro. Tenta novamente.");
+      setErrorModalOpen(true);
     } finally {
       setSubmitting(false);
     }
