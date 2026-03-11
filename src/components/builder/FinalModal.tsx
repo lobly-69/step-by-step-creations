@@ -2,6 +2,7 @@ import { useState } from "react";
 import { X } from "lucide-react";
 import helpdeskImg from "@/assets/helpdesk-pixar.jpg";
 import { useBuilder } from "@/context/BuilderContext";
+import WhatsAppHelpModal from "./WhatsAppHelpModal";
 
 interface FinalModalProps {
   isOpen: boolean;
