@@ -161,7 +161,7 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
           setEmailBackendError("Email inválido");
           setEmailTouched(true);
         } else {
-          setSubmitError("Ocorreu um erro. Tenta novamente.");
+          setErrorModalOpen(true);
         }
       } else {
         setSubmitError("Ocorreu um erro. Tenta novamente.");
