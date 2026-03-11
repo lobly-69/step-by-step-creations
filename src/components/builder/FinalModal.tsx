@@ -2,6 +2,7 @@ import { useState } from "react";
 import { X } from "lucide-react";
 import helpdeskImg from "@/assets/helpdesk-pixar.jpg";
 import { useBuilder } from "@/context/BuilderContext";
+import WhatsAppHelpModal from "./WhatsAppHelpModal";
 
 interface FinalModalProps {
   isOpen: boolean;
@@ -35,6 +36,8 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [phoneBackendError, setPhoneBackendError] = useState<string | null>(null);
   const [emailBackendError, setEmailBackendError] = useState<string | null>(null);
+
+  const [errorModalOpen, setErrorModalOpen] = useState(false);
 
   // ✅ Honeypot (invisível para humanos)
   const [hpCompany, setHpCompany] = useState("");
@@ -146,7 +149,7 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
 
       // Não revelar “honeypot” ao utilizador
       if (code === "HONEYPOT") {
-        setSubmitError("Ocorreu um erro. Tenta novamente.");
+        setErrorModalOpen(true);
         return;
       }
 
@@ -158,14 +161,14 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
           setEmailBackendError("Email inválido");
           setEmailTouched(true);
         } else {
-          setSubmitError("Ocorreu um erro. Tenta novamente.");
+          setErrorModalOpen(true);
         }
       } else {
-        setSubmitError("Ocorreu um erro. Tenta novamente.");
+        setErrorModalOpen(true);
       }
     } catch (err: unknown) {
       console.error("finalizeSession error:", err);
-      setSubmitError("Ocorreu um erro. Tenta novamente.");
+      setErrorModalOpen(true);
     } finally {
       setSubmitting(false);
     }
@@ -352,6 +355,8 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
             )}
 
             {submitError && <p className="text-xs text-destructive text-center">{submitError}</p>}
+
+            <WhatsAppHelpModal isOpen={errorModalOpen} onClose={() => setErrorModalOpen(false)} variant="error" />
 
             <button
               onClick={handleSubmit}
