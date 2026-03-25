@@ -109,7 +109,7 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
       </div>
 
       {/* Tamanhos */}
-      <div>
+      <div id="section-tamanhos">
         <p className="text-xs font-semibold text-foreground mb-1.5">Escolhe o Tamanho:</p>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-1.5">
           {config.sizes.map((opt) => {

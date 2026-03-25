@@ -60,10 +60,14 @@ export function useAppConfig() {
 
         if (hasError) {
           const firstErr = sizesRes.error || bgRes.error || frameRes.error || mockupRes.error;
+          // Only mark offline for real connection errors, not auth/permission issues
+          const isConnectionError = firstErr?.message === "Failed to fetch" || 
+            firstErr?.message?.includes("NetworkError") || 
+            !navigator.onLine;
           console.warn("Supabase fetch error, using fallback", { sizesRes, bgRes, frameRes, mockupRes });
           if (!cancelled) {
             setConfig(fallbackConfig);
-            setOffline(true);
+            setOffline(isConnectionError);
             setFetchError({ message: firstErr?.message || "Unknown error", statusCode: (firstErr as any)?.code });
           }
         } else {

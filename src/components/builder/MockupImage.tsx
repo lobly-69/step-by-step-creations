@@ -34,7 +34,7 @@ const MockupImage = () => {
       <div className="absolute top-[5px] right-[5px] bg-white/90 backdrop-blur-sm rounded-md px-1.5 py-0.5 flex items-center gap-1">
         <span className="text-[8px] font-semibold text-foreground">c/ Moldura Incluída</span>
       </div>
-      <div className="absolute bottom-[5px] right-[5px] bg-white/90 backdrop-blur-sm rounded-md px-1.5 py-0.5 flex items-center gap-1">
+      <div className="absolute bottom-[5px] left-[5px] bg-white/90 backdrop-blur-sm rounded-md px-1.5 py-0.5 flex items-center gap-1">
         <AlertTriangle className="w-3 h-3 text-foreground" />
         <span className="text-[8px] font-semibold text-foreground">Esta imagem é apenas ilustrativa</span>
       </div>

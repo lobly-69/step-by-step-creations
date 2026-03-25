@@ -63,6 +63,15 @@ const BuilderWizard = () => {
 
     if (step.id === "personalizacao" && !isStepComplete(step.id)) {
       showToast("Escolhe as cores e o tamanho para continuar.");
+      // Scroll to sizes section if no size selected
+      const sizesSection = document.getElementById("section-tamanhos");
+      if (sizesSection) {
+        sizesSection.scrollIntoView({ behavior: "smooth", block: "center" });
+        sizesSection.classList.add("ring-2", "ring-promo/50", "rounded-lg", "transition-all");
+        setTimeout(() => {
+          sizesSection.classList.remove("ring-2", "ring-promo/50", "rounded-lg", "transition-all");
+        }, 2000);
+      }
       return;
     }
     if (step.id === "upload" && !isStepComplete(step.id)) {
