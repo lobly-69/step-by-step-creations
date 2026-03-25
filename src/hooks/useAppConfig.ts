@@ -78,10 +78,12 @@ export function useAppConfig() {
           }
         }
       } catch (err: any) {
+        // Only go offline on real network/fetch errors (not during initial load)
+        const isNetworkError = err?.message === "Failed to fetch" || !navigator.onLine;
         console.warn("Supabase fetch failed, using fallback", err);
         if (!cancelled) {
           setConfig(fallbackConfig);
-          setOffline(true);
+          setOffline(isNetworkError);
           setFetchError({ message: err?.message || String(err) });
         }
       } finally {
