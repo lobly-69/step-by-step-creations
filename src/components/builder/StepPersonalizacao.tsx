@@ -1,6 +1,6 @@
 import { useBuilder } from "@/context/BuilderContext";
 import { Skeleton } from "@/components/ui/skeleton";
-import cardImg from "@/assets/card-tamanho.png";
+
 
 interface StepPersonalizacaoProps {
   onError: (msg: string | null) => void;
