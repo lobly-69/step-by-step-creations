@@ -1,6 +1,6 @@
 import { useBuilder } from "@/context/BuilderContext";
 import { Skeleton } from "@/components/ui/skeleton";
-import cardImg from "@/assets/card-tamanho.png";
+
 
 interface StepPersonalizacaoProps {
   onError: (msg: string | null) => void;
@@ -12,17 +12,15 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
   const formatPrice = (price: number) =>
     price.toFixed(2).replace(".", ",") + "€";
 
-  // Determine the size card image based on selected frame prefix
+  // Determine the size card image based on selected frame
   const getSizeImage = (opt: typeof config.sizes[0]) => {
-    // Find the selected frame color to check its name
     const selectedFrame = config.frameColors.find(f => f.prefix === state.cores.frame);
-    const isWhiteFrame = selectedFrame?.name?.toLowerCase() === "branco" || 
-                          selectedFrame?.prefix?.toLowerCase() === "branco" ||
-                          state.cores.frame === "branco";
+    const isWhiteFrame = selectedFrame?.name?.toLowerCase() === "white" || 
+                          selectedFrame?.prefix?.toUpperCase() === "W";
     if (isWhiteFrame) {
-      return opt.image_white || opt.image_black || opt.bg_img || cardImg;
+      return opt.image_white || opt.image_black || "";
     }
-    return opt.image_black || opt.image_white || opt.bg_img || cardImg;
+    return opt.image_black || opt.image_white || "";
   };
 
   if (configLoading) {
@@ -126,7 +124,7 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
               }`}
               >
                 <div className="relative">
-                  <img src={getSizeImage(opt)} alt="" className="w-full aspect-square object-cover transition-opacity duration-200" />
+                  <img key={`${opt.size}-${state.cores.frame}`} src={getSizeImage(opt)} alt="" className="w-full aspect-square object-cover transition-opacity duration-200" />
                   <div className="absolute top-0 right-0 w-10 h-6 bg-promo rounded-bl-[14px] flex items-start justify-end">
                     <span className="text-promo-foreground text-[11px] font-bold mt-[3px] mr-[5px]">-{opt.discount}%</span>
                   </div>
