@@ -4,10 +4,10 @@ import type { AppConfig, DbSize, DbBackgroundColor, DbFrameColor, DbMockupVarian
 
 // Fallbacks matching current hardcoded values
 const fallbackSizes: DbSize[] = [
-  { size: "20x30", label: "Discreto", name: "20x30", price: 49.9, promo_price: 39.9, discount: 20, bg_img: null, display_order: 1 },
-  { size: "30x40", label: "Equilibrado", name: "30x40", price: 74.9, promo_price: 59.9, discount: 20, bg_img: null, display_order: 2 },
-  { size: "40x50", label: "Impactante", name: "40x50", price: 99.9, promo_price: 79.9, discount: 20, bg_img: null, display_order: 3 },
-  { size: "70x50", label: "Marcante", name: "70x50", price: 124.9, promo_price: 99.9, discount: 20, bg_img: null, display_order: 4 },
+  { size: "20x30", label: "Discreto", name: "20x30", price: 49.9, promo_price: 39.9, discount: 20, bg_img: null, image_black: null, image_white: null, display_order: 1 },
+  { size: "30x40", label: "Equilibrado", name: "30x40", price: 74.9, promo_price: 59.9, discount: 20, bg_img: null, image_black: null, image_white: null, display_order: 2 },
+  { size: "40x50", label: "Impactante", name: "40x50", price: 99.9, promo_price: 79.9, discount: 20, bg_img: null, image_black: null, image_white: null, display_order: 3 },
+  { size: "70x50", label: "Marcante", name: "70x50", price: 124.9, promo_price: 99.9, discount: 20, bg_img: null, image_black: null, image_white: null, display_order: 4 },
 ];
 
 const fallbackBackgroundColors: DbBackgroundColor[] = [
@@ -48,7 +48,7 @@ export function useAppConfig() {
 
       try {
         const [sizesRes, bgRes, frameRes, mockupRes, settingsRes] = await Promise.all([
-          supabase.from("sizes").select("size, label, name, price, promo_price, discount, bg_img, display_order").eq("active", true).order("display_order", { ascending: true }),
+          supabase.from("sizes").select("size, label, name, price, promo_price, discount, bg_img, image_black, image_white, display_order").eq("active", true).order("display_order", { ascending: true }),
           supabase.from("background_colors").select("name, hex, display_order").eq("active", true).order("display_order", { ascending: true }),
           supabase.from("frame_colors").select("id, name, prefix, hex, display_order, display_name_pt").eq("active", true).order("display_order", { ascending: true }),
           supabase.from("mockup_variants").select("size, frame_prefix, background_name, image_url").eq("active", true),
