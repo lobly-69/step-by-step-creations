@@ -444,6 +444,8 @@ export type Database = {
           created_at: string | null
           discount: number | null
           display_order: number
+          image_black: string | null
+          image_white: string | null
           label: string
           name: string
           price: number
@@ -456,6 +458,8 @@ export type Database = {
           created_at?: string | null
           discount?: number | null
           display_order: number
+          image_black?: string | null
+          image_white?: string | null
           label: string
           name: string
           price: number
@@ -468,6 +472,8 @@ export type Database = {
           created_at?: string | null
           discount?: number | null
           display_order?: number
+          image_black?: string | null
+          image_white?: string | null
           label?: string
           name?: string
           price?: number
