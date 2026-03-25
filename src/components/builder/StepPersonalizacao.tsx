@@ -124,7 +124,7 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
               }`}
               >
                 <div className="relative">
-                  <img src={getSizeImage(opt)} alt="" className="w-full aspect-square object-cover transition-opacity duration-200" />
+                  <img key={`${opt.size}-${state.cores.frame}`} src={getSizeImage(opt)} alt="" className="w-full aspect-square object-cover transition-opacity duration-200" />
                   <div className="absolute top-0 right-0 w-10 h-6 bg-promo rounded-bl-[14px] flex items-start justify-end">
                     <span className="text-promo-foreground text-[11px] font-bold mt-[3px] mr-[5px]">-{opt.discount}%</span>
                   </div>
