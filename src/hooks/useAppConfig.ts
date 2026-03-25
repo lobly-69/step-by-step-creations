@@ -48,7 +48,7 @@ export function useAppConfig() {
 
       try {
         const [sizesRes, bgRes, frameRes, mockupRes, settingsRes] = await Promise.all([
-          supabase.from("sizes").select("size, label, name, price, promo_price, discount, bg_img, display_order").eq("active", true).order("display_order", { ascending: true }),
+          supabase.from("sizes").select("size, label, name, price, promo_price, discount, bg_img, image_black, image_white, display_order").eq("active", true).order("display_order", { ascending: true }),
           supabase.from("background_colors").select("name, hex, display_order").eq("active", true).order("display_order", { ascending: true }),
           supabase.from("frame_colors").select("id, name, prefix, hex, display_order, display_name_pt").eq("active", true).order("display_order", { ascending: true }),
           supabase.from("mockup_variants").select("size, frame_prefix, background_name, image_url").eq("active", true),
