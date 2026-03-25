@@ -12,17 +12,15 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
   const formatPrice = (price: number) =>
     price.toFixed(2).replace(".", ",") + "€";
 
-  // Determine the size card image based on selected frame prefix
+  // Determine the size card image based on selected frame
   const getSizeImage = (opt: typeof config.sizes[0]) => {
-    // Find the selected frame color to check its name
     const selectedFrame = config.frameColors.find(f => f.prefix === state.cores.frame);
-    const isWhiteFrame = selectedFrame?.name?.toLowerCase() === "branco" || 
-                          selectedFrame?.prefix?.toLowerCase() === "branco" ||
-                          state.cores.frame === "branco";
+    const isWhiteFrame = selectedFrame?.name?.toLowerCase() === "white" || 
+                          selectedFrame?.prefix?.toUpperCase() === "W";
     if (isWhiteFrame) {
-      return opt.image_white || opt.image_black || opt.bg_img || cardImg;
+      return opt.image_white || opt.image_black || "";
     }
-    return opt.image_black || opt.image_white || opt.bg_img || cardImg;
+    return opt.image_black || opt.image_white || "";
   };
 
   if (configLoading) {
