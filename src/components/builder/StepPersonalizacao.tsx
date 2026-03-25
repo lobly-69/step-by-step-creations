@@ -12,9 +12,14 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
   const formatPrice = (price: number) =>
     price.toFixed(2).replace(".", ",") + "€";
 
-  // Determine the size card image based on selected frame
+  // Determine the size card image based on selected frame prefix
   const getSizeImage = (opt: typeof config.sizes[0]) => {
-    if (state.cores.frame === "branco") {
+    // Find the selected frame color to check its name
+    const selectedFrame = config.frameColors.find(f => f.prefix === state.cores.frame);
+    const isWhiteFrame = selectedFrame?.name?.toLowerCase() === "branco" || 
+                          selectedFrame?.prefix?.toLowerCase() === "branco" ||
+                          state.cores.frame === "branco";
+    if (isWhiteFrame) {
       return opt.image_white || opt.image_black || opt.bg_img || cardImg;
     }
     return opt.image_black || opt.image_white || opt.bg_img || cardImg;
@@ -104,7 +109,7 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
       </div>
 
       {/* Tamanhos */}
-      <div>
+      <div id="section-tamanhos">
         <p className="text-xs font-semibold text-foreground mb-1.5">Escolhe o Tamanho:</p>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-1.5">
           {config.sizes.map((opt) => {
