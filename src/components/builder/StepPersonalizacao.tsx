@@ -1,4 +1,5 @@
 import { useBuilder } from "@/context/BuilderContext";
+import { Skeleton } from "@/components/ui/skeleton";
 import cardImg from "@/assets/card-tamanho.png";
 
 interface StepPersonalizacaoProps {
@@ -6,56 +7,99 @@ interface StepPersonalizacaoProps {
 }
 
 const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
-  const { state, config, setFrame, setFundo, setTamanho } = useBuilder();
+  const { state, config, configLoading, setFrame, setFundo, setTamanho } = useBuilder();
 
   const formatPrice = (price: number) =>
     price.toFixed(2).replace(".", ",") + "€";
+
+  // Determine the size card image based on selected frame
+  const getSizeImage = (opt: typeof config.sizes[0]) => {
+    if (state.cores.frame === "branco") {
+      return opt.image_white || opt.image_black || opt.bg_img || cardImg;
+    }
+    return opt.image_black || opt.image_white || opt.bg_img || cardImg;
+  };
+
+  if (configLoading) {
+    return (
+      <div>
+        <h2 className="text-base font-bold text-foreground leading-tight text-center mb-0">Personaliza a tua Obra Prima</h2>
+        <p className="text-xs text-muted-foreground leading-tight text-center mb-2">Define as cores e o tamanho que melhor combinam com o teu espaço...</p>
+
+        {/* Skeleton for frame colors */}
+        <div className="mb-3">
+          <Skeleton className="w-16 h-4 mb-1" />
+          <div className="flex gap-1.5">
+            <Skeleton className="h-[32px] w-14 rounded-lg" />
+            <Skeleton className="h-[32px] w-14 rounded-lg" />
+          </div>
+        </div>
+
+        {/* Skeleton for background colors */}
+        <div className="mb-3">
+          <Skeleton className="w-24 h-4 mb-1" />
+          <div className="grid grid-cols-5 gap-1.5">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Skeleton key={i} className="h-[32px] rounded-lg" />
+            ))}
+          </div>
+        </div>
+
+        {/* Skeleton for sizes */}
+        <div>
+          <Skeleton className="w-32 h-4 mb-1.5" />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-1.5">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Skeleton key={i} className="rounded-xl aspect-[3/4]" />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
       <h2 className="text-base font-bold text-foreground leading-tight text-center mb-0">Personaliza a tua Obra Prima</h2>
       <p className="text-xs text-muted-foreground leading-tight text-center mb-2">Define as cores e o tamanho que melhor combinam com o teu espaço...</p>
 
-      {/* Cores — moldura e fundo lado a lado */}
-      <div className="flex gap-[24px] mb-3 items-start">
-        {/* Frame colors */}
-        <div className="flex-[2]">
-          <p className="text-xs font-semibold text-foreground mb-1">Moldura:</p>
-          <div className="grid grid-cols-2 gap-1.5">
-            {config.frameColors.map((c) => {
-              const selected = state.cores.frame === c.prefix;
-              return (
-                <button
-                  key={c.id}
-                  onClick={() => { setFrame(c.prefix); onError(null); }}
-                  className={`h-[32px] md:h-9 rounded-lg border-2 transition-all duration-200 ${
-                    selected ? "border-promo ring-2 ring-promo/30 scale-105" : "border-border hover:border-primary/40"
-                  }`}
-                  style={{ backgroundColor: c.hex }}
-                />
-              );
-            })}
-          </div>
+      {/* Frame colors — own row */}
+      <div className="mb-3">
+        <p className="text-xs font-semibold text-foreground mb-1">Moldura:</p>
+        <div className="flex gap-1.5">
+          {config.frameColors.map((c) => {
+            const selected = state.cores.frame === c.prefix;
+            return (
+              <button
+                key={c.id}
+                onClick={() => { setFrame(c.prefix); onError(null); }}
+                className={`w-14 h-[32px] md:h-9 rounded-lg border-2 transition-all duration-200 ${
+                  selected ? "border-promo ring-2 ring-promo/30 scale-105" : "border-border hover:border-primary/40"
+                }`}
+                style={{ backgroundColor: c.hex }}
+              />
+            );
+          })}
         </div>
+      </div>
 
-        {/* Background colors */}
-        <div className="flex-[5]">
-          <p className="text-xs font-semibold text-foreground mb-1">Cor de Fundo:</p>
-          <div className="grid grid-cols-5 gap-1.5">
-            {config.backgroundColors.map((c) => {
-              const selected = state.cores.fundo === c.name;
-              return (
-                <button
-                  key={c.name}
-                  onClick={() => { setFundo(c.name); onError(null); }}
-                  className={`h-[32px] md:h-9 rounded-lg border-2 transition-all duration-200 ${
-                    selected ? "border-promo ring-2 ring-promo/30 scale-105" : "border-border hover:border-primary/40"
-                  }`}
-                  style={{ backgroundColor: c.hex }}
-                />
-              );
-            })}
-          </div>
+      {/* Background colors — own row */}
+      <div className="mb-3">
+        <p className="text-xs font-semibold text-foreground mb-1">Cor de Fundo:</p>
+        <div className="grid grid-cols-5 gap-1.5">
+          {config.backgroundColors.map((c) => {
+            const selected = state.cores.fundo === c.name;
+            return (
+              <button
+                key={c.name}
+                onClick={() => { setFundo(c.name); onError(null); }}
+                className={`h-[32px] md:h-9 rounded-lg border-2 transition-all duration-200 ${
+                  selected ? "border-promo ring-2 ring-promo/30 scale-105" : "border-border hover:border-primary/40"
+                }`}
+                style={{ backgroundColor: c.hex }}
+              />
+            );
+          })}
         </div>
       </div>
 
@@ -77,7 +121,7 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
               }`}
               >
                 <div className="relative">
-                  <img src={opt.bg_img || cardImg} alt="" className="w-full aspect-square object-cover" />
+                  <img src={getSizeImage(opt)} alt="" className="w-full aspect-square object-cover transition-opacity duration-200" />
                   <div className="absolute top-0 right-0 w-10 h-6 bg-promo rounded-bl-[14px] flex items-start justify-end">
                     <span className="text-promo-foreground text-[11px] font-bold mt-[3px] mr-[5px]">-{opt.discount}%</span>
                   </div>

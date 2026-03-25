@@ -6,6 +6,8 @@ export interface DbSize {
   promo_price: number | null;
   discount: number | null;
   bg_img: string | null;
+  image_black: string | null;
+  image_white: string | null;
   display_order: number;
 }
 
