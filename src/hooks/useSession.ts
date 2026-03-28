@@ -170,5 +170,5 @@ export function useSession(): UseSessionReturn {
     [sessionId]
   );
 
-  return { sessionId, sessionReady, updateStep, getUploadUrls, finalizeSession };
+  return { sessionId, sessionReady, updateStep, getUploadUrls, finalizeSession, callEdge };
 }
