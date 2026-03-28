@@ -91,9 +91,17 @@ const StepUpload = ({ onError, onSkipPhotos }: StepUploadProps) => {
                   <p className="text-xs font-medium text-foreground truncate">{slot.file?.name ?? "Foto"}</p>
 
                   {slot.status === "uploading" && (
-                    <div className="flex items-center gap-1.5 mt-1">
-                      <Loader2 className="w-3 h-3 text-primary animate-spin" />
-                      <span className="text-[10px] text-muted-foreground">A enviar...</span>
+                    <div className="mt-1.5 space-y-1">
+                      <div className="h-1.5 w-full rounded-full bg-secondary overflow-hidden">
+                        <div
+                          className="h-full rounded-full bg-primary transition-all duration-300"
+                          style={{ width: `${Math.max(slot.progress, 5)}%` }}
+                        />
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Loader2 className="w-3 h-3 text-primary animate-spin" />
+                        <span className="text-[10px] text-muted-foreground">A enviar… {slot.progress}%</span>
+                      </div>
                     </div>
                   )}
 
