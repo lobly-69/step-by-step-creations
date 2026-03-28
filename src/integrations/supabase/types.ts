@@ -225,6 +225,45 @@ export type Database = {
         }
         Relationships: []
       }
+      builder_session_files: {
+        Row: {
+          created_at: string
+          id: string
+          mime_type: string | null
+          original_name: string | null
+          session_id: string
+          size_bytes: number | null
+          slot_index: number
+          status: string
+          storage_path: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          mime_type?: string | null
+          original_name?: string | null
+          session_id: string
+          size_bytes?: number | null
+          slot_index: number
+          status?: string
+          storage_path?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          mime_type?: string | null
+          original_name?: string | null
+          session_id?: string
+          size_bytes?: number | null
+          slot_index?: number
+          status?: string
+          storage_path?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       builder_sessions: {
         Row: {
           abandoned_at: string | null
