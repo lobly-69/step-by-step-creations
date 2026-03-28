@@ -116,6 +116,8 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
       }
     }
 
+    setSubmitting(true);
+
     try {
       // If finalizing without photos, mark result_code on the session first
       if (noPhotos) {
