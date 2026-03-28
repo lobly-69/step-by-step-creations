@@ -247,6 +247,7 @@ export type Database = {
           result_code: string | null
           session_id: string
           size: string | null
+          total_file_size_mb: number | null
           updated_at: string
           webhook_attempts: number
           webhook_last_error: string | null
@@ -275,6 +276,7 @@ export type Database = {
           result_code?: string | null
           session_id?: string
           size?: string | null
+          total_file_size_mb?: number | null
           updated_at?: string
           webhook_attempts?: number
           webhook_last_error?: string | null
@@ -303,6 +305,7 @@ export type Database = {
           result_code?: string | null
           session_id?: string
           size?: string | null
+          total_file_size_mb?: number | null
           updated_at?: string
           webhook_attempts?: number
           webhook_last_error?: string | null
@@ -531,6 +534,7 @@ export type Database = {
           result_code: string | null
           session_id: string | null
           size: string | null
+          total_file_size_mb: number | null
           updated_at: string | null
           whatsapp_full: string | null
           whatsapp_number: string | null
