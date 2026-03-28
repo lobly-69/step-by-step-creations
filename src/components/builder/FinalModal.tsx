@@ -19,7 +19,7 @@ const countryCodes = [
 const nameRegex = /^[^\d]*$/; // no digits allowed
 
 const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
-  const { finalizeSession, noPhotos, updateStep, state, config, sessionId } = useBuilder();
+  const { finalizeSession, noPhotos, updateStep, state, config, sessionId, uploadedCount, isUploading, activeCount } = useBuilder();
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
