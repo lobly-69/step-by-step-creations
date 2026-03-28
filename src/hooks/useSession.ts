@@ -63,6 +63,7 @@ interface UseSessionReturn {
   updateStep: (payload: Record<string, unknown>) => Promise<void>;
   getUploadUrls: (files: { ext: string }[]) => Promise<UploadUrlEntry[]>;
   finalizeSession: (payload: FinalizePayload) => Promise<{ success: boolean; entry_number?: number; error_code?: string; error?: string }>;
+  callEdge: <T>(functionName: string, body: object) => Promise<T>;
 }
 
 export function useSession(): UseSessionReturn {
