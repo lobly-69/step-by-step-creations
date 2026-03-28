@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { BuilderProvider, useBuilder } from "@/context/BuilderContext";
 import { useAppConfig } from "@/hooks/useAppConfig";
@@ -9,13 +9,21 @@ import StepUpload from "@/components/builder/StepUpload";
 import FinalModal from "@/components/builder/FinalModal";
 
 const BuilderWizard = () => {
-  const { isStepComplete, canAccessStep, markStepVisited, configOffline, getMockupUrl, setNoPhotos } = useBuilder();
+  const {
+    isStepComplete, canAccessStep, markStepVisited, configOffline,
+    getMockupUrl, setNoPhotos, activeCount, uploadedCount, isUploading, slots,
+  } = useBuilder();
   const location = useLocation();
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [prevMockupUrl, setPrevMockupUrl] = useState<string | null>(null);
+
+  // Auto-open modal state
+  const autoOpenTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const autoOpenFiredRef = useRef(false);
+  const prevActiveCountRef = useRef(0);
 
   const currentRoute = location.pathname.replace("/", "") || stepsConfig[0].route;
   const currentStepIndex = stepsConfig.findIndex((s) => s.route === currentRoute);
@@ -53,6 +61,40 @@ const BuilderWizard = () => {
     }
   }, [currentStepIndex, canAccessStep, isStepComplete, navigate]);
 
+  // ── Auto-open modal logic ──
+  useEffect(() => {
+    // Detect new upload started (activeCount increased)
+    if (activeCount > prevActiveCountRef.current) {
+      // New upload initiated - reset auto-open flag and set timer
+      autoOpenFiredRef.current = false;
+
+      // Clear any existing timer
+      if (autoOpenTimerRef.current) {
+        clearTimeout(autoOpenTimerRef.current);
+        autoOpenTimerRef.current = null;
+      }
+
+      const delay = activeCount >= 3 ? 2000 : 5000;
+
+      autoOpenTimerRef.current = setTimeout(() => {
+        if (!autoOpenFiredRef.current && !modalOpen) {
+          autoOpenFiredRef.current = true;
+          setModalOpen(true);
+        }
+        autoOpenTimerRef.current = null;
+      }, delay);
+    }
+
+    prevActiveCountRef.current = activeCount;
+  }, [activeCount, modalOpen]);
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (autoOpenTimerRef.current) clearTimeout(autoOpenTimerRef.current);
+    };
+  }, []);
+
   const showToast = useCallback((msg: string) => {
     setToastMsg(null);
     setTimeout(() => setToastMsg(msg), 10);
@@ -63,7 +105,6 @@ const BuilderWizard = () => {
 
     if (step.id === "personalizacao" && !isStepComplete(step.id)) {
       showToast("Escolhe as cores e o tamanho para continuar.");
-      // Scroll to sizes section if no size selected
       const sizesSection = document.getElementById("section-tamanhos");
       if (sizesSection) {
         sizesSection.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -74,8 +115,20 @@ const BuilderWizard = () => {
       }
       return;
     }
-    if (step.id === "upload" && !isStepComplete(step.id)) {
-      showToast("Adiciona pelo menos 1 foto e aguarda o upload terminar para continuar.");
+
+    if (step.id === "upload") {
+      // Green button always opens modal if at least 1 active image
+      if (activeCount >= 1) {
+        // Cancel pending auto-open timer
+        if (autoOpenTimerRef.current) {
+          clearTimeout(autoOpenTimerRef.current);
+          autoOpenTimerRef.current = null;
+        }
+        setModalOpen(true);
+        return;
+      }
+      // No images at all
+      showToast("Adiciona pelo menos 1 foto para continuares.");
       return;
     }
 
@@ -88,7 +141,7 @@ const BuilderWizard = () => {
     } else {
       setModalOpen(true);
     }
-  }, [validIndex, isStepComplete, markStepVisited, navigate, showToast]);
+  }, [validIndex, isStepComplete, markStepVisited, navigate, showToast, activeCount]);
 
   const handleSkipPhotos = useCallback(() => {
     setNoPhotos(true);
@@ -98,6 +151,8 @@ const BuilderWizard = () => {
   const handleModalClose = useCallback(() => {
     setModalOpen(false);
     setNoPhotos(false);
+    // Mark auto-open as fired so it won't reopen without a new upload
+    autoOpenFiredRef.current = true;
   }, [setNoPhotos]);
 
   const handleStepClick = useCallback((index: number) => {
