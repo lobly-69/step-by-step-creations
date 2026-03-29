@@ -144,8 +144,7 @@ const StepUpload = ({ onError, onSkipPhotos }: StepUploadProps) => {
         ref={fileInputRef}
         type="file"
         accept={ACCEPTED_TYPES}
-        multiple
-        className="hidden"
+      className="hidden"
         onChange={handleFileSelect}
       />
 
