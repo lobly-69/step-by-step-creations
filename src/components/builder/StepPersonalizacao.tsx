@@ -69,7 +69,7 @@ const StepPersonalizacao = ({ onError }: StepPersonalizacaoProps) => {
       {/* Frame + Background colors — side by side on desktop */}
       <div className="flex flex-col md:flex-row md:gap-4 mb-3">
         {/* Frame colors */}
-        <div className="mb-3 md:mb-0 md:flex-1">
+        <div className="mb-3 md:mb-0 md:w-auto md:pr-[60px] md:flex-shrink-0">
           <p className="text-xs font-semibold text-foreground mb-1">Cor da Moldura:</p>
           <div className="flex gap-1.5">
             {config.frameColors.map((c) => {

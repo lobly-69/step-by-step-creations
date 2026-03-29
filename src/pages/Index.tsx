@@ -74,7 +74,7 @@ const BuilderWizard = () => {
         autoOpenTimerRef.current = null;
       }
 
-      const delay = activeCount >= 3 ? 2000 : 5000;
+      const delay = activeCount >= 3 ? 6000 : 15000;
 
       autoOpenTimerRef.current = setTimeout(() => {
         if (!autoOpenFiredRef.current && !modalOpen) {

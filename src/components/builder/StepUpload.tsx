@@ -92,10 +92,10 @@ const StepUpload = ({ onError, onSkipPhotos }: StepUploadProps) => {
 
                   {slot.status === "uploading" && (
                     <div className="mt-1.5 space-y-1">
-                      <div className="h-1.5 w-full rounded-full bg-secondary overflow-hidden">
+                      <div className="h-2 w-full rounded-full bg-muted overflow-hidden border border-border">
                         <div
-                          className="h-full rounded-full bg-primary transition-all duration-300"
-                          style={{ width: `${Math.max(slot.progress, 5)}%` }}
+                          className="h-full rounded-full bg-primary transition-all duration-300 ease-out"
+                          style={{ width: `${Math.max(slot.progress, 3)}%` }}
                         />
                       </div>
                       <div className="flex items-center gap-1">
