@@ -62,31 +62,48 @@ const BuilderWizard = () => {
   }, [currentStepIndex, canAccessStep, isStepComplete, navigate]);
 
   // ── Auto-open modal logic ──
+  // Track when uploads finish to start timer only after no uploading slots remain
+  const prevIsUploadingRef = useRef(false);
+
   useEffect(() => {
     // Detect new upload started (activeCount increased)
     if (activeCount > prevActiveCountRef.current) {
-      // New upload initiated - reset auto-open flag and set timer
+      // New upload initiated - reset auto-open flag
       autoOpenFiredRef.current = false;
-
-      // Clear any existing timer
+      // Cancel any pending timer (user is adding more photos)
       if (autoOpenTimerRef.current) {
         clearTimeout(autoOpenTimerRef.current);
         autoOpenTimerRef.current = null;
       }
+    }
+    prevActiveCountRef.current = activeCount;
+  }, [activeCount]);
 
-      const delay = activeCount >= 3 ? 6000 : 15000;
+  useEffect(() => {
+    const wasUploading = prevIsUploadingRef.current;
+    prevIsUploadingRef.current = isUploading;
 
+    // When uploads finish (was uploading -> not uploading) and we have active images
+    if (wasUploading && !isUploading && activeCount >= 1 && !autoOpenFiredRef.current && !modalOpen) {
+      // Clear any existing timer
+      if (autoOpenTimerRef.current) {
+        clearTimeout(autoOpenTimerRef.current);
+      }
       autoOpenTimerRef.current = setTimeout(() => {
         if (!autoOpenFiredRef.current && !modalOpen) {
           autoOpenFiredRef.current = true;
           setModalOpen(true);
         }
         autoOpenTimerRef.current = null;
-      }, delay);
+      }, 5000);
     }
 
-    prevActiveCountRef.current = activeCount;
-  }, [activeCount, modalOpen]);
+    // If uploading started, cancel any pending timer
+    if (isUploading && autoOpenTimerRef.current) {
+      clearTimeout(autoOpenTimerRef.current);
+      autoOpenTimerRef.current = null;
+    }
+  }, [isUploading, activeCount, modalOpen]);
 
   // Cleanup timer on unmount
   useEffect(() => {
