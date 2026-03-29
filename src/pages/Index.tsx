@@ -62,25 +62,50 @@ const BuilderWizard = () => {
   }, [currentStepIndex, canAccessStep, isStepComplete, navigate]);
 
   // ── Auto-open modal logic ──
+  const prevIsUploadingRef = useRef(false);
 
+  // When activeCount increases → new upload started
   useEffect(() => {
-    // Detect new upload started (activeCount increased) → start 3s timer
     if (activeCount > prevActiveCountRef.current) {
       autoOpenFiredRef.current = false;
-      // Cancel any pending timer and start fresh
+      // Cancel any pending timer on new upload
       if (autoOpenTimerRef.current) {
         clearTimeout(autoOpenTimerRef.current);
-      }
-      autoOpenTimerRef.current = setTimeout(() => {
-        if (!autoOpenFiredRef.current && !modalOpen) {
-          autoOpenFiredRef.current = true;
-          setModalOpen(true);
-        }
         autoOpenTimerRef.current = null;
-      }, 3000);
+      }
+      // If this is the 3rd image, start 4s timer immediately
+      if (activeCount >= 3) {
+        autoOpenTimerRef.current = setTimeout(() => {
+          if (!autoOpenFiredRef.current && !modalOpen) {
+            autoOpenFiredRef.current = true;
+            setModalOpen(true);
+          }
+          autoOpenTimerRef.current = null;
+        }, 4000);
+      }
     }
     prevActiveCountRef.current = activeCount;
   }, [activeCount, modalOpen]);
+
+  // When uploads finish (isUploading transitions false) → start 5.5s timer for 1-2 images
+  useEffect(() => {
+    if (prevIsUploadingRef.current && !isUploading) {
+      // Uploads just finished
+      if (activeCount >= 1 && activeCount <= 2 && !autoOpenFiredRef.current) {
+        if (autoOpenTimerRef.current) {
+          clearTimeout(autoOpenTimerRef.current);
+        }
+        autoOpenTimerRef.current = setTimeout(() => {
+          if (!autoOpenFiredRef.current && !modalOpen) {
+            autoOpenFiredRef.current = true;
+            setModalOpen(true);
+          }
+          autoOpenTimerRef.current = null;
+        }, 5500);
+      }
+    }
+    prevIsUploadingRef.current = isUploading;
+  }, [isUploading, activeCount, modalOpen]);
 
   // Cleanup timer on unmount
   useEffect(() => {
