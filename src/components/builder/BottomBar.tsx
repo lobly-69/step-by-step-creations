@@ -44,7 +44,7 @@ const BottomBar = ({ onAdvance, buttonLabel = "Confirmar" }: BottomBarProps) => 
       </div>
       <div className="w-full bg-card py-0.5 flex items-center justify-center gap-1">
         <Info className="w-3 h-3 text-promo" />
-        <span className="text-[10px] font-semibold text-promo">Não tens que pagar nada nesta fase</span>
+        <span className="text-[10px] font-semibold text-promo">Não pagas agora, só depois de aprovar o Desenho</span>
       </div>
     </div>
   );

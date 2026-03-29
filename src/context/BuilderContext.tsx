@@ -198,16 +198,37 @@ export const BuilderProvider: React.FC<BuilderProviderProps> = ({
           )
         );
 
-        // 3. Upload to storage
-        const { supabase } = await import("@/integrations/supabase/client");
-        const { error: uploadError } = await supabase.storage
-          .from("builder")
-          .uploadToSignedUrl(entry.path, entry.token, file, {
-            contentType: file.type || "application/octet-stream",
-            upsert: true,
-          });
+        // 3. Upload to storage using XHR for progress tracking
+        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
+        const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;
+        const uploadUrl = `${supabaseUrl}/storage/v1/object/upload/sign/builder/${entry.path}?token=${encodeURIComponent(entry.token)}`;
 
-        if (uploadError) throw new Error(uploadError.message);
+        await new Promise<void>((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.open("PUT", uploadUrl, true);
+          xhr.setRequestHeader("apikey", supabaseKey);
+          xhr.setRequestHeader("authorization", `Bearer ${supabaseKey}`);
+          xhr.setRequestHeader("x-upsert", "true");
+
+          xhr.upload.onprogress = (e) => {
+            if (e.lengthComputable) {
+              const pct = Math.round((e.loaded / e.total) * 100);
+              setSlots((prev) =>
+                prev.map((s) =>
+                  s.slotIndex === slotIndex ? { ...s, progress: pct } : s
+                )
+              );
+            }
+          };
+
+          xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 300) resolve();
+            else reject(new Error(`Upload failed: ${xhr.status}`));
+          };
+          xhr.onerror = () => reject(new Error("Upload network error"));
+
+          xhr.send(file);
+        });
 
         // 4. Confirm upload
         await callEdge("confirm_upload", {
