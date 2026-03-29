@@ -94,7 +94,7 @@ const StepUpload = ({ onError, onSkipPhotos }: StepUploadProps) => {
                     <div className="mt-1.5 space-y-1">
                       <div className="h-2 w-full rounded-full bg-muted overflow-hidden border border-border">
                         <div
-                          className="h-full rounded-full bg-primary transition-all duration-300 ease-out"
+                          className="h-full rounded-full bg-promo transition-all duration-300 ease-out"
                           style={{ width: `${Math.max(slot.progress, 3)}%` }}
                         />
                       </div>

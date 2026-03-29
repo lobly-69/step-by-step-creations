@@ -66,26 +66,10 @@ const BuilderWizard = () => {
   const prevIsUploadingRef = useRef(false);
 
   useEffect(() => {
-    // Detect new upload started (activeCount increased)
+    // Detect new upload started (activeCount increased) → start 3s timer
     if (activeCount > prevActiveCountRef.current) {
-      // New upload initiated - reset auto-open flag
       autoOpenFiredRef.current = false;
-      // Cancel any pending timer (user is adding more photos)
-      if (autoOpenTimerRef.current) {
-        clearTimeout(autoOpenTimerRef.current);
-        autoOpenTimerRef.current = null;
-      }
-    }
-    prevActiveCountRef.current = activeCount;
-  }, [activeCount]);
-
-  useEffect(() => {
-    const wasUploading = prevIsUploadingRef.current;
-    prevIsUploadingRef.current = isUploading;
-
-    // When uploads finish (was uploading -> not uploading) and we have active images
-    if (wasUploading && !isUploading && activeCount >= 1 && !autoOpenFiredRef.current && !modalOpen) {
-      // Clear any existing timer
+      // Cancel any pending timer and start fresh
       if (autoOpenTimerRef.current) {
         clearTimeout(autoOpenTimerRef.current);
       }
@@ -95,15 +79,10 @@ const BuilderWizard = () => {
           setModalOpen(true);
         }
         autoOpenTimerRef.current = null;
-      }, 5000);
+      }, 3000);
     }
-
-    // If uploading started, cancel any pending timer
-    if (isUploading && autoOpenTimerRef.current) {
-      clearTimeout(autoOpenTimerRef.current);
-      autoOpenTimerRef.current = null;
-    }
-  }, [isUploading, activeCount, modalOpen]);
+    prevActiveCountRef.current = activeCount;
+  }, [activeCount, modalOpen]);
 
   // Cleanup timer on unmount
   useEffect(() => {
