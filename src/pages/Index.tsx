@@ -62,8 +62,6 @@ const BuilderWizard = () => {
   }, [currentStepIndex, canAccessStep, isStepComplete, navigate]);
 
   // ── Auto-open modal logic ──
-  // Track when uploads finish to start timer only after no uploading slots remain
-  const prevIsUploadingRef = useRef(false);
 
   useEffect(() => {
     // Detect new upload started (activeCount increased) → start 3s timer
