@@ -416,6 +416,7 @@ export const BuilderProvider: React.FC<BuilderProviderProps> = ({
         uploadedCount: _uploadedCount,
         isUploading,
         availableCount: _availableCount,
+        hasInteractedUpload,
         markStepVisited,
         isStepComplete,
         canAccessStep,
