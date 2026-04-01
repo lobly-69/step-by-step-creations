@@ -53,7 +53,7 @@ const StepUpload = ({ onError, onSkipPhotos }: StepUploadProps) => {
         {Array.from({ length: visibleCount }).map((_, index) => {
           const slot = slots[index];
 
-          if (slot.status === "empty") {
+          if (slot.status === "empty" || (slot.status === "failed" && !slot.previewUrl)) {
             return (
               <div
                 key={`empty-${index}`}
