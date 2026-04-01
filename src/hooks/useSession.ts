@@ -3,6 +3,9 @@ import { supabase } from "@/integrations/supabase/client";
 
 const SESSION_KEY = "lobly_session_id";
 
+// Capture the initial landing URL (with UTMs) before SPA routing changes it
+const INITIAL_LANDING_URL = window.location.href;
+
 async function callEdge<T>(functionName: string, body: object): Promise<T> {
   const { data, error } = await supabase.functions.invoke(functionName, { body });
   if (error) throw new Error(`Edge function ${functionName} failed: ${error.message}`);
@@ -11,7 +14,7 @@ async function callEdge<T>(functionName: string, body: object): Promise<T> {
 
 async function createNewSession(): Promise<string> {
   const { session_id } = await callEdge<{ session_id: string }>("create_session", {
-    origin_url: window.location.href,
+    origin_url: INITIAL_LANDING_URL,
   });
   localStorage.setItem(SESSION_KEY, session_id);
   return session_id;

@@ -346,8 +346,8 @@ export const BuilderProvider: React.FC<BuilderProviderProps> = ({
             state.cores.fundo !== null
           );
         case "upload": {
-          // At least 1 uploaded and nothing currently uploading
-          return uploadedSlotCount(slots) >= 1 && !hasUploadingSlots(slots);
+          // User interacted with upload (even if it failed) — allow progression
+          return hasInteractedUpload;
         }
         default:
           return false;
