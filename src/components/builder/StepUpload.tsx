@@ -110,10 +110,7 @@ const StepUpload = ({ onError, onSkipPhotos }: StepUploadProps) => {
                   )}
 
                   {slot.status === "failed" && (
-                    <div className="flex items-center gap-1 mt-0.5">
-                      <AlertCircle className="w-3 h-3 text-destructive" />
-                      <p className="text-[10px] text-destructive font-medium">{slot.error ?? "Erro no envio"}</p>
-                    </div>
+                    <p className="text-[10px] text-step-completed font-medium mt-0.5">Concluido</p>
                   )}
                 </div>
                 <button
