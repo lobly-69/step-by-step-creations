@@ -265,6 +265,7 @@ export const BuilderProvider: React.FC<BuilderProviderProps> = ({
 
   const startSlotUpload = useCallback(
     (files: File[]) => {
+      setHasInteractedUpload(true);
       // Find empty slots and assign files
       const currentSlots = [...slots];
       const emptyIndices: number[] = [];
