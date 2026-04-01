@@ -86,6 +86,7 @@ export const BuilderProvider: React.FC<BuilderProviderProps> = ({
   const [visitedSteps, setVisitedSteps] = useState<Set<string>>(new Set());
   const [defaultsApplied, setDefaultsApplied] = useState(false);
   const [noPhotos, setNoPhotos] = useState(false);
+  const [hasInteractedUpload, setHasInteractedUpload] = useState(false);
   const [slots, setSlots] = useState<UploadSlot[]>(createEmptySlots());
 
   const { sessionId, updateStep, finalizeSession, callEdge } = useSession();
