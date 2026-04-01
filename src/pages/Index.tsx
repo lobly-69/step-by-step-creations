@@ -11,7 +11,7 @@ import FinalModal from "@/components/builder/FinalModal";
 const BuilderWizard = () => {
   const {
     isStepComplete, canAccessStep, markStepVisited, configOffline,
-    getMockupUrl, setNoPhotos, activeCount, uploadedCount, isUploading, slots,
+    getMockupUrl, setNoPhotos, activeCount, uploadedCount, isUploading, slots, hasInteractedUpload,
   } = useBuilder();
   const location = useLocation();
   const navigate = useNavigate();
