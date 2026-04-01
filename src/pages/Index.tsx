@@ -154,7 +154,7 @@ const BuilderWizard = () => {
     } else {
       setModalOpen(true);
     }
-  }, [validIndex, isStepComplete, markStepVisited, navigate, showToast, activeCount]);
+  }, [validIndex, isStepComplete, markStepVisited, navigate, showToast]);
 
   const handleSkipPhotos = useCallback(() => {
     setNoPhotos(true);
