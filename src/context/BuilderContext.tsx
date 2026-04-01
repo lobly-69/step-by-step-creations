@@ -41,6 +41,7 @@ interface BuilderContextType {
   uploadedCount: number;
   isUploading: boolean;
   availableCount: number;
+  hasInteractedUpload: boolean;
   markStepVisited: (stepId: string) => void;
   isStepComplete: (stepId: string) => boolean;
   canAccessStep: (stepIndex: number) => boolean;
