@@ -41,6 +41,7 @@ interface BuilderContextType {
   uploadedCount: number;
   isUploading: boolean;
   availableCount: number;
+  hasInteractedUpload: boolean;
   markStepVisited: (stepId: string) => void;
   isStepComplete: (stepId: string) => boolean;
   canAccessStep: (stepIndex: number) => boolean;
@@ -86,6 +87,7 @@ export const BuilderProvider: React.FC<BuilderProviderProps> = ({
   const [visitedSteps, setVisitedSteps] = useState<Set<string>>(new Set());
   const [defaultsApplied, setDefaultsApplied] = useState(false);
   const [noPhotos, setNoPhotos] = useState(false);
+  const [hasInteractedUpload, setHasInteractedUpload] = useState(false);
   const [slots, setSlots] = useState<UploadSlot[]>(createEmptySlots());
 
   const { sessionId, updateStep, finalizeSession, callEdge } = useSession();
@@ -263,6 +265,7 @@ export const BuilderProvider: React.FC<BuilderProviderProps> = ({
 
   const startSlotUpload = useCallback(
     (files: File[]) => {
+      setHasInteractedUpload(true);
       // Find empty slots and assign files
       const currentSlots = [...slots];
       const emptyIndices: number[] = [];
@@ -345,14 +348,14 @@ export const BuilderProvider: React.FC<BuilderProviderProps> = ({
             state.cores.fundo !== null
           );
         case "upload": {
-          // At least 1 uploaded and nothing currently uploading
-          return uploadedSlotCount(slots) >= 1 && !hasUploadingSlots(slots);
+          // User interacted with upload (even if it failed) — allow progression
+          return hasInteractedUpload;
         }
         default:
           return false;
       }
     },
-    [state, slots]
+    [state, hasInteractedUpload]
   );
 
   const canAccessStep = useCallback(
@@ -413,6 +416,7 @@ export const BuilderProvider: React.FC<BuilderProviderProps> = ({
         uploadedCount: _uploadedCount,
         isUploading,
         availableCount: _availableCount,
+        hasInteractedUpload,
         markStepVisited,
         isStepComplete,
         canAccessStep,

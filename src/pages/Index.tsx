@@ -11,7 +11,7 @@ import FinalModal from "@/components/builder/FinalModal";
 const BuilderWizard = () => {
   const {
     isStepComplete, canAccessStep, markStepVisited, configOffline,
-    getMockupUrl, setNoPhotos, activeCount, uploadedCount, isUploading, slots,
+    getMockupUrl, setNoPhotos, activeCount, uploadedCount, isUploading, slots, hasInteractedUpload,
   } = useBuilder();
   const location = useLocation();
   const navigate = useNavigate();
@@ -136,18 +136,12 @@ const BuilderWizard = () => {
     }
 
     if (step.id === "upload") {
-      // Green button always opens modal if at least 1 active image
-      if (activeCount >= 1) {
-        // Cancel pending auto-open timer
-        if (autoOpenTimerRef.current) {
-          clearTimeout(autoOpenTimerRef.current);
-          autoOpenTimerRef.current = null;
-        }
-        setModalOpen(true);
-        return;
+      // Green button always opens modal
+      if (autoOpenTimerRef.current) {
+        clearTimeout(autoOpenTimerRef.current);
+        autoOpenTimerRef.current = null;
       }
-      // No images at all
-      showToast("Adiciona pelo menos 1 foto para continuares.");
+      setModalOpen(true);
       return;
     }
 
@@ -160,7 +154,7 @@ const BuilderWizard = () => {
     } else {
       setModalOpen(true);
     }
-  }, [validIndex, isStepComplete, markStepVisited, navigate, showToast, activeCount]);
+  }, [validIndex, isStepComplete, markStepVisited, navigate, showToast]);
 
   const handleSkipPhotos = useCallback(() => {
     setNoPhotos(true);

@@ -100,21 +100,7 @@ const FinalModal = ({ isOpen, onClose }: FinalModalProps) => {
 
     if (!isFormValid()) return;
 
-    // Check upload state (skip check if noPhotos)
-    if (!noPhotos) {
-      if (activeCount === 0) {
-        setSubmitError("Adiciona pelo menos 1 foto para continuares.");
-        return;
-      }
-      if (isUploading) {
-        setSubmitError("A tua foto ainda está a terminar de carregar. Podes continuar a preencher os teus dados enquanto isso.");
-        return;
-      }
-      if (uploadedCount === 0) {
-        setSubmitError("Adiciona pelo menos 1 foto para continuares.");
-        return;
-      }
-    }
+    // No longer block submit based on upload status — backend handles missing images
 
     setSubmitting(true);
 
