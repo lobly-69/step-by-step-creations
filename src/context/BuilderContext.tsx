@@ -355,7 +355,7 @@ export const BuilderProvider: React.FC<BuilderProviderProps> = ({
           return false;
       }
     },
-    [state, slots]
+    [state, hasInteractedUpload]
   );
 
   const canAccessStep = useCallback(
