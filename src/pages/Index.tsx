@@ -136,18 +136,12 @@ const BuilderWizard = () => {
     }
 
     if (step.id === "upload") {
-      // Green button always opens modal if at least 1 active image
-      if (activeCount >= 1) {
-        // Cancel pending auto-open timer
-        if (autoOpenTimerRef.current) {
-          clearTimeout(autoOpenTimerRef.current);
-          autoOpenTimerRef.current = null;
-        }
-        setModalOpen(true);
-        return;
+      // Green button always opens modal
+      if (autoOpenTimerRef.current) {
+        clearTimeout(autoOpenTimerRef.current);
+        autoOpenTimerRef.current = null;
       }
-      // No images at all
-      showToast("Adiciona pelo menos 1 foto para continuares.");
+      setModalOpen(true);
       return;
     }
 
