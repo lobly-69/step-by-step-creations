@@ -3,8 +3,10 @@ import { supabase } from "@/integrations/supabase/client";
 
 const SESSION_KEY = "lobly_session_id";
 
-// Capture the initial landing URL (with UTMs) before SPA routing changes it
-const INITIAL_LANDING_URL = window.location.href;
+// Capture the referring page (the page that brought the user to the builder).
+// document.referrer gives us the previous page URL (e.g. lobly.pt/produto/...).
+// Falls back to window.location.href only if referrer is empty (direct access).
+const INITIAL_LANDING_URL = document.referrer || window.location.href;
 
 async function callEdge<T>(functionName: string, body: object): Promise<T> {
   const { data, error } = await supabase.functions.invoke(functionName, { body });
